@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipForward, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Target } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sessions, Session, Exercise } from './data';
 
@@ -143,6 +143,20 @@ export default function App() {
       if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
         setIsResting(true);
         setTimeLeft(REST_DURATION);
+      }
+    }
+  };
+
+  const skipToPrevious = () => {
+    stopBeep(); // Stop alarm if user interacts
+    setIsRunning(false);
+    if (isResting) {
+      setIsResting(false);
+    } else {
+      if (selectedSession && currentExerciseIndex > 0) {
+        setCurrentExerciseIndex(prev => prev - 1);
+      } else if (selectedSession) {
+        setTimeLeft(selectedSession.exercises[0].durationMinutes * 60);
       }
     }
   };
@@ -368,6 +382,14 @@ export default function App() {
             >
               <RotateCcw className="w-6 h-6" />
             </button>
+
+            <button 
+              onClick={skipToPrevious}
+              className="p-4 rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+              title="السابق"
+            >
+              <SkipBack className="w-6 h-6" />
+            </button>
             
             <button 
               onClick={toggleTimer}
@@ -383,7 +405,7 @@ export default function App() {
             <button 
               onClick={skipToNext}
               className="p-4 rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-              title="تخطي"
+              title="التالي"
             >
               <SkipForward className="w-6 h-6" />
             </button>
