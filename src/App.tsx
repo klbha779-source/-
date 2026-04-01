@@ -4,9 +4,10 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipForward, SkipBack, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Target } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Lock, Check, Plus, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sessions, Session, Exercise } from './data';
+import { secrets } from './secrets';
 
 let activeAudioCtx: AudioContext | null = null;
 
@@ -59,7 +60,28 @@ const formatTime = (seconds: number) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'training' | 'roadmap' | 'benefits'>('training');
+  const [activeTab, setActiveTab] = useState<'training' | 'roadmap' | 'secrets' | 'recovery' | 'nighttime'>('training');
+  const [readSecrets, setReadSecrets] = useState<number[]>([]);
+
+  useEffect(() => {
+    const savedReadSecrets = localStorage.getItem('readSecrets');
+    if (savedReadSecrets) {
+      setReadSecrets(JSON.parse(savedReadSecrets));
+    }
+
+    const hour = new Date().getHours();
+    if (hour >= 20 || hour < 5) {
+      setActiveTab('nighttime');
+    }
+  }, []);
+
+  const toggleSecret = (index: number) => {
+    const newReadSecrets = readSecrets.includes(index)
+      ? readSecrets.filter(i => i !== index)
+      : [...readSecrets, index];
+    setReadSecrets(newReadSecrets);
+    localStorage.setItem('readSecrets', JSON.stringify(newReadSecrets));
+  };
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   
@@ -108,9 +130,18 @@ export default function App() {
         // Exercise finished, start rest
         playBeep('rest');
         if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
-          setIsResting(true);
-          setTimeLeft(REST_DURATION);
-          setIsRunning(true); // Auto-start rest
+          const currentExercise = selectedSession.exercises[currentExerciseIndex];
+          const restTime = currentExercise.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
+          
+          if (restTime > 0) {
+            setIsResting(true);
+            setTimeLeft(restTime);
+            setIsRunning(true); // Auto-start rest
+          } else {
+            // No rest, move to next exercise
+            setCurrentExerciseIndex(prev => prev + 1);
+            setIsRunning(true);
+          }
         } else {
           // Last exercise finished
           playBeep('end');
@@ -141,8 +172,14 @@ export default function App() {
       }
     } else {
       if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
-        setIsResting(true);
-        setTimeLeft(REST_DURATION);
+        const currentExercise = selectedSession.exercises[currentExerciseIndex];
+        const restTime = currentExercise.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
+        if (restTime > 0) {
+          setIsResting(true);
+          setTimeLeft(restTime);
+        } else {
+          setCurrentExerciseIndex(prev => prev + 1);
+        }
       }
     }
   };
@@ -165,10 +202,23 @@ export default function App() {
     stopBeep(); // Stop alarm if user interacts
     setIsRunning(false);
     if (isResting) {
-      setTimeLeft(REST_DURATION);
+      const currentExercise = selectedSession?.exercises[currentExerciseIndex];
+      const restTime = currentExercise?.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
+      setTimeLeft(restTime);
     } else if (selectedSession) {
       setTimeLeft(selectedSession.exercises[currentExerciseIndex].durationMinutes * 60);
     }
+  };
+
+  const calculateSessionTotalTime = (session: Session) => {
+    let totalSeconds = 0;
+    session.exercises.forEach((ex, index) => {
+      totalSeconds += ex.durationMinutes * 60;
+      if (index < session.exercises.length - 1) {
+        totalSeconds += ex.restDurationSeconds !== undefined ? ex.restDurationSeconds : REST_DURATION;
+      }
+    });
+    return formatTime(totalSeconds);
   };
 
   if (!selectedSession) {
@@ -199,11 +249,18 @@ export default function App() {
               <span>خريطة الجلسات</span>
             </button>
             <button 
-              onClick={() => setActiveTab('benefits')}
-              className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'benefits' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+              onClick={() => setActiveTab('secrets')}
+              className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'secrets' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
             >
-              <Target className="w-5 h-5" />
-              <span>الفوائد والأهداف</span>
+              <Lock className="w-5 h-5" />
+              <span>أسرار الاحتراف</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('nighttime')}
+              className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'nighttime' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            >
+              <Clock className="w-5 h-5" />
+              <span>الاستشفاء الليلي</span>
             </button>
           </div>
 
@@ -226,7 +283,13 @@ export default function App() {
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-0"></div>
                   <h2 className="text-2xl font-bold mb-2 text-emerald-400">{session.title}</h2>
-                  <p className="text-slate-400 mb-6">{session.exercises.length} تمارين مخصصة</p>
+                  <div className="flex flex-col gap-2 mb-6">
+                    <p className="text-slate-400">{session.exercises.length} تمارين مخصصة</p>
+                    <p className="text-slate-500 text-sm flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      الوقت الإجمالي: {calculateSessionTotalTime(session)} دقيقة
+                    </p>
+                  </div>
                   
                   <div className="flex items-center text-emerald-500 font-medium">
                     <span>ابدأ الجلسة</span>
@@ -264,32 +327,51 @@ export default function App() {
             </div>
           )}
 
-          {activeTab === 'benefits' && (
-            <div className="space-y-12">
-              {sessions.map(session => (
-                <div key={session.id}>
-                  <h2 className="text-2xl font-bold text-emerald-400 mb-6">{session.title}</h2>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {session.exercises.map(ex => (
-                      <div key={ex.id} className="bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/30 transition-colors">
-                        <h3 className="text-xl font-bold text-white mb-3">{ex.title}</h3>
-                        <div className="mb-4">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg">
-                            <Target className="w-3.5 h-3.5" />
-                            يستهدف: {ex.targets}
-                          </span>
-                        </div>
-                        <div className="space-y-3">
-                          <div>
-                            <p className="text-sm text-slate-500 mb-1">الاستفادة:</p>
-                            <p className="text-slate-300 text-sm leading-relaxed">{ex.benefits}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+          {activeTab === 'secrets' && (
+            <div className="max-w-2xl mx-auto space-y-6">
+              <h2 className="text-3xl font-bold text-center text-emerald-400 mb-8">أسرار العالم لتطوير مستواك 200%</h2>
+              <div className="space-y-4">
+                {secrets.map((secret, index) => (
+                  <div key={index} className="flex items-center gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <button 
+                      onClick={() => toggleSecret(index)}
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${readSecrets.includes(index) ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'}`}
+                    >
+                      {readSecrets.includes(index) && <Check className="w-4 h-4 text-white" />}
+                    </button>
+                    <p className="text-slate-200">{secret}</p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'nighttime' && (
+            <div className="max-w-2xl mx-auto space-y-6">
+              <h2 className="text-3xl font-bold text-center text-emerald-400 mb-8">نظام الاستشفاء الليلي الجديد</h2>
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-slate-300 leading-relaxed">
+                <p className="mb-4">
+                  هذا النظام مصمم ليكون رفيقك في نهاية اليوم. يبدأ تلقائياً لضمان استشفاء عضلاتك، تحسين توازنك، ووقايتك من الإصابات.
+                </p>
+                <p className="mb-4">
+                  "حيث لا تتوفر المعلومات بسرعة، فهذا يعني أن التحديثات ليست سريعة، بل مفصلة. وفوائد كل شيء واضحة."
+                </p>
+                <p>
+                  استعد لرحلة استشفاء من أعماق الطب والفلسفة، كأنك تلعب كرة القدم لمليار سنة.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const nightSession = sessions.find(s => s.id === 'night_recovery');
+                  if (nightSession) {
+                    setSelectedSession(nightSession);
+                    setCurrentExerciseIndex(0);
+                  }
+                }}
+                className="w-full bg-emerald-500 text-slate-950 font-bold py-4 rounded-xl hover:bg-emerald-400 transition-colors"
+              >
+                ابدأ جلسة الاستشفاء الليلي
+              </button>
             </div>
           )}
         </div>
@@ -298,8 +380,9 @@ export default function App() {
   }
 
   const currentExercise = selectedSession.exercises[currentExerciseIndex];
+  const restTime = currentExercise.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
   const progress = isResting 
-    ? ((REST_DURATION - timeLeft) / REST_DURATION) * 100 
+    ? ((restTime - timeLeft) / restTime) * 100 
     : ((currentExercise.durationMinutes * 60 - timeLeft) / (currentExercise.durationMinutes * 60)) * 100;
 
   const nextExercise = currentExerciseIndex < selectedSession.exercises.length - 1 
@@ -502,26 +585,18 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                    <div className="flex items-center gap-3 mb-3 text-blue-400">
-                      <CheckCircle2 className="w-6 h-6" />
-                      <h3 className="text-xl font-bold">الاستفادة</h3>
+                  {currentExercise.setsAndReps && (
+                    <div className="bg-purple-950/20 border border-purple-900/50 rounded-2xl p-6 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-2 h-full bg-purple-500"></div>
+                      <div className="flex items-center gap-3 mb-3 text-purple-400">
+                        <Activity className="w-6 h-6" />
+                        <h3 className="text-xl font-bold">التكرارات والجولات (احترافي)</h3>
+                      </div>
+                      <p className="text-purple-100/90 leading-relaxed font-medium">
+                        {currentExercise.setsAndReps}
+                      </p>
                     </div>
-                    <p className="text-slate-300 leading-relaxed">
-                      {currentExercise.benefits}
-                    </p>
-                  </div>
-
-                  <div className="bg-emerald-950/20 border border-emerald-900/50 rounded-2xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
-                    <div className="flex items-center gap-3 mb-3 text-emerald-400">
-                      <Brain className="w-6 h-6" />
-                      <h3 className="text-xl font-bold">نصيحة جبارة</h3>
-                    </div>
-                    <p className="text-emerald-100/90 leading-relaxed font-medium">
-                      {currentExercise.tips}
-                    </p>
-                  </div>
+                  )}
                 </div>
               )}
             </motion.div>
