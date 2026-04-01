@@ -18,6 +18,31 @@ const stopBeep = () => {
   }
 };
 
+// Helper to play a short 3-beep sound
+const playQuickBeeps = () => {
+  stopBeep();
+  try {
+    activeAudioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const ctx = activeAudioCtx;
+    const now = ctx.currentTime;
+    
+    for (let i = 0; i < 3; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, now + i * 0.3); // High pitch
+      gain.gain.setValueAtTime(0.5, now + i * 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.3 + 0.1);
+      osc.start(now + i * 0.3);
+      osc.stop(now + i * 0.3 + 0.1);
+    }
+  } catch (e) {
+    console.error("Audio playback failed", e);
+  }
+};
+
 // Helper to play a loud 10-second pulsing alarm using Web Audio API
 const playBeep = (type: 'end' | 'rest') => {
   stopBeep(); // Stop any currently playing alarm
@@ -108,7 +133,13 @@ export default function App() {
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       timerRef.current = window.setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          const next = prev - 1;
+          if (selectedSession && selectedSession.exercises[currentExerciseIndex]?.id === 'n1' && next === 180) {
+            playQuickBeeps();
+          }
+          return next;
+        });
       }, 1000 / speed);
     } else if (timeLeft === 0 && isRunning) {
       // Timer finished
