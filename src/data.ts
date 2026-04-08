@@ -458,5 +458,125 @@ export const sessions: Session[] = [
         setsAndReps: '3 جولات × 15 تكراراً'
       }
     ]
+  },
+  {
+    id: 'sprint_stairs',
+    title: 'جلسة السبرنت والدرج',
+    exercises: [
+      {
+        id: 'ss_1',
+        title: 'سبرنت انفجاري 20 متر',
+        durationMinutes: 10,
+        description: 'انطلاق بأقصى سرعة لمسافة 20 متر ثم العودة مشياً.',
+        targets: 'السرعة القصوى، الألياف العضلية السريعة',
+        restDurationSeconds: 60,
+        setsAndReps: '10 تكرارات'
+      },
+      {
+        id: 'ss_2',
+        title: 'صعود الدرج السريع',
+        durationMinutes: 10,
+        description: 'صعود الدرج بأقصى سرعة خطوتين بخطوتين، والنزول ببطء.',
+        targets: 'قوة الفخذين، التحمل اللاهوائي',
+        restDurationSeconds: 60,
+        setsAndReps: '5 جولات'
+      }
+    ]
+  },
+  {
+    id: 'sprint_only',
+    title: 'جلسة السبرنت الانفجاري',
+    exercises: [
+      {
+        id: 'so_1',
+        title: 'سبرنت 30 متر',
+        durationMinutes: 15,
+        description: 'انطلاق بأقصى سرعة لمسافة 30 متر مع التركيز على حركة الذراعين.',
+        targets: 'السرعة القصوى',
+        restDurationSeconds: 90,
+        setsAndReps: '10 تكرارات'
+      }
+    ]
+  },
+  {
+    id: 'physical_light',
+    title: 'بدنية خفيفة (سبرنتات ودرج + أوزان خفيفة)',
+    exercises: [
+      {
+        id: 'pl_1',
+        title: 'سبرنتات قصيرة 10 متر',
+        durationMinutes: 5,
+        description: 'انطلاقات قصيرة جداً وسريعة.',
+        targets: 'رد الفعل السريع',
+        restDurationSeconds: 30,
+        setsAndReps: '10 تكرارات'
+      },
+      {
+        id: 'pl_2',
+        title: 'درج خفيف',
+        durationMinutes: 5,
+        description: 'صعود الدرج بخطوة واحدة بإيقاع متوسط.',
+        targets: 'تنشيط الدورة الدموية',
+        restDurationSeconds: 60,
+        setsAndReps: '3 جولات'
+      },
+      {
+        id: 'pl_3',
+        title: 'أوزان خفيفة (جسم كامل)',
+        durationMinutes: 10,
+        description: 'تمارين بوزن الجسم أو دمبلز خفيفة (سكوات، ضغط، سحب) بدون الوصول للإرهاق.',
+        targets: 'الحفاظ على الكتلة العضلية، ضخ الدم',
+        restDurationSeconds: 60,
+        setsAndReps: 'جولتين لكل تمرين'
+      }
+    ]
+  },
+  {
+    id: 'skills_light',
+    title: 'مهارة خفيفة (استلام وتسليم أو 1 ضد 1)',
+    exercises: [
+      {
+        id: 'sl_1',
+        title: 'استلام وتسليم (باصات خفيفة)',
+        durationMinutes: 15,
+        description: 'تمرير الكرة مع الحائط أو زميل بلمسة ولمستين بدون مجهود بدني عالي.',
+        targets: 'دقة التمرير، اللمسة الأولى',
+        restDurationSeconds: 0,
+        setsAndReps: '15 دقيقة متواصلة'
+      },
+      {
+        id: 'sl_2',
+        title: '1 ضد 1 (خفيف)',
+        durationMinutes: 15,
+        description: 'مراوغات خفيفة وتجربة مهارات جديدة بدون التحامات قوية.',
+        targets: 'الخيال المهاري، الثقة',
+        restDurationSeconds: 60,
+        setsAndReps: '15 دقيقة'
+      }
+    ]
   }
 ];
+
+export const weeklySchedule: Record<number, { title: string, sessionIds: string[] }> = {
+  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['skills_mastery', 'physical_day1', 'sprint_stairs'] },
+  1: { title: 'الاثنين: مهارة فقط', sessionIds: ['skills_mastery'] },
+  2: { title: 'الثلاثاء: راحة تامة', sessionIds: [] },
+  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['skills_mastery', 'physical_day2', 'sprint_only'] },
+  4: { title: 'الخميس: مهارة فقط', sessionIds: ['skills_mastery'] },
+  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['skills_mastery', 'physical_light'] },
+  6: { title: 'السبت: مهارة خفيفة أو 1 ضد 1', sessionIds: ['skills_light'] }
+};
+
+export const getCaloriesForSession = (sessionId: string): number => {
+  switch (sessionId) {
+    case 'skills_mastery': return 450;
+    case 'physical_day1': return 350;
+    case 'physical_day2': return 350;
+    case 'sprint_stairs': return 200;
+    case 'sprint_only': return 150;
+    case 'physical_light': return 200;
+    case 'skills_light': return 200;
+    case 'night_recovery': return 50;
+    default: return 100;
+  }
+};

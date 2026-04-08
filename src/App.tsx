@@ -4,10 +4,9 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipForward, SkipBack, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Lock, Check, Plus, Save } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, RotateCcw, CheckCircle2, Brain, Activity, Clock, ArrowRight, Zap, Volume2, ListTree, Plus, Save, Flame, Calendar, Camera, Upload, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sessions, Session, Exercise } from './data';
-import { secrets } from './secrets';
+import { sessions, Session, Exercise, weeklySchedule, getCaloriesForSession } from './data';
 
 let activeAudioCtx: AudioContext | null = null;
 
@@ -85,13 +84,43 @@ const formatTime = (seconds: number) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'training' | 'roadmap' | 'secrets' | 'recovery' | 'nighttime'>('training');
-  const [readSecrets, setReadSecrets] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState<'training' | 'roadmap' | 'recovery' | 'nighttime' | 'nutrition'>('training');
+  const [completedSessions, setCompletedSessions] = useState<string[]>([]);
+  const [completedExercises, setCompletedExercises] = useState<string[]>([]);
+  
+  const [consumedCalories, setConsumedCalories] = useState<number>(0);
+  const [consumedProtein, setConsumedProtein] = useState<number>(0);
+  const [foodLog, setFoodLog] = useState<{name: string, calories: number, protein: number, time: string}[]>([]);
+  const [foodInput, setFoodInput] = useState('');
+  const [foodImage, setFoodImage] = useState<File | null>(null);
+  const [isCalculatingFood, setIsCalculatingFood] = useState(false);
 
   useEffect(() => {
-    const savedReadSecrets = localStorage.getItem('readSecrets');
-    if (savedReadSecrets) {
-      setReadSecrets(JSON.parse(savedReadSecrets));
+    const today = new Date().toDateString();
+    const savedDate = localStorage.getItem('lastDate');
+    if (savedDate !== today) {
+      localStorage.setItem('lastDate', today);
+      localStorage.setItem('completedSessions', JSON.stringify([]));
+      localStorage.setItem('completedExercises', JSON.stringify([]));
+      localStorage.setItem('consumedCalories', '0');
+      localStorage.setItem('consumedProtein', '0');
+      localStorage.setItem('foodLog', JSON.stringify([]));
+      setCompletedSessions([]);
+      setCompletedExercises([]);
+      setConsumedCalories(0);
+      setConsumedProtein(0);
+      setFoodLog([]);
+    } else {
+      const savedSessions = localStorage.getItem('completedSessions');
+      if (savedSessions) setCompletedSessions(JSON.parse(savedSessions));
+      const savedExercises = localStorage.getItem('completedExercises');
+      if (savedExercises) setCompletedExercises(JSON.parse(savedExercises));
+      const savedCalories = localStorage.getItem('consumedCalories');
+      if (savedCalories) setConsumedCalories(Number(savedCalories));
+      const savedProtein = localStorage.getItem('consumedProtein');
+      if (savedProtein) setConsumedProtein(Number(savedProtein));
+      const savedLog = localStorage.getItem('foodLog');
+      if (savedLog) setFoodLog(JSON.parse(savedLog));
     }
 
     const hour = new Date().getHours();
@@ -100,13 +129,6 @@ export default function App() {
     }
   }, []);
 
-  const toggleSecret = (index: number) => {
-    const newReadSecrets = readSecrets.includes(index)
-      ? readSecrets.filter(i => i !== index)
-      : [...readSecrets, index];
-    setReadSecrets(newReadSecrets);
-    localStorage.setItem('readSecrets', JSON.stringify(newReadSecrets));
-  };
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   
@@ -128,6 +150,30 @@ export default function App() {
       }
     }
   }, [selectedSession, currentExerciseIndex, isResting]);
+
+  const completeSession = () => {
+    playBeep('end');
+    alert("أحسنت! لقد أكملت الجلسة التدريبية بنجاح.");
+    if (selectedSession) {
+      const newCompleted = [...completedSessions, selectedSession.id];
+      setCompletedSessions(newCompleted);
+      localStorage.setItem('completedSessions', JSON.stringify(newCompleted));
+    }
+    setSelectedSession(null);
+    setCurrentExerciseIndex(0);
+  };
+
+  const markExerciseComplete = (sessionId: string, exerciseId: string) => {
+    const key = `${sessionId}_${exerciseId}`;
+    setCompletedExercises(prev => {
+      if (!prev.includes(key)) {
+        const next = [...prev, key];
+        localStorage.setItem('completedExercises', JSON.stringify(next));
+        return next;
+      }
+      return prev;
+    });
+  };
 
   // Timer logic
   useEffect(() => {
@@ -152,14 +198,15 @@ export default function App() {
         if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
           setCurrentExerciseIndex(prev => prev + 1);
         } else {
-          // Session complete
-          alert("أحسنت! لقد أكملت الجلسة التدريبية بنجاح.");
-          setSelectedSession(null);
-          setCurrentExerciseIndex(0);
+          completeSession();
         }
       } else {
         // Exercise finished, start rest
         playBeep('rest');
+        if (selectedSession) {
+          markExerciseComplete(selectedSession.id, selectedSession.exercises[currentExerciseIndex].id);
+        }
+
         if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
           const currentExercise = selectedSession.exercises[currentExerciseIndex];
           const restTime = currentExercise.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
@@ -174,11 +221,7 @@ export default function App() {
             setIsRunning(true);
           }
         } else {
-          // Last exercise finished
-          playBeep('end');
-          alert("أحسنت! لقد أكملت الجلسة التدريبية بنجاح.");
-          setSelectedSession(null);
-          setCurrentExerciseIndex(0);
+          completeSession();
         }
       }
     }
@@ -200,8 +243,13 @@ export default function App() {
       setIsResting(false);
       if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
         setCurrentExerciseIndex(prev => prev + 1);
+      } else {
+        completeSession();
       }
     } else {
+      if (selectedSession) {
+        markExerciseComplete(selectedSession.id, selectedSession.exercises[currentExerciseIndex].id);
+      }
       if (selectedSession && currentExerciseIndex < selectedSession.exercises.length - 1) {
         const currentExercise = selectedSession.exercises[currentExerciseIndex];
         const restTime = currentExercise.restDurationSeconds !== undefined ? currentExercise.restDurationSeconds : REST_DURATION;
@@ -211,6 +259,8 @@ export default function App() {
         } else {
           setCurrentExerciseIndex(prev => prev + 1);
         }
+      } else {
+        completeSession();
       }
     }
   };
@@ -252,6 +302,104 @@ export default function App() {
     return formatTime(totalSeconds);
   };
 
+  const calculateBurnedCalories = () => {
+    let total = 0;
+    completedExercises.forEach(key => {
+      const [sessionId, exerciseId] = key.split('_');
+      const session = sessions.find(s => s.id === sessionId);
+      if (session) {
+        const exercise = session.exercises.find(e => e.id === exerciseId);
+        if (exercise) {
+          const totalSessionMinutes = session.exercises.reduce((sum, ex) => sum + ex.durationMinutes, 0);
+          const exerciseCalories = getCaloriesForSession(sessionId) * (exercise.durationMinutes / totalSessionMinutes);
+          total += exerciseCalories;
+        }
+      }
+    });
+    return Math.round(total);
+  };
+
+  const handleCalculateFood = async () => {
+    if (!foodInput.trim() && !foodImage) return;
+    setIsCalculatingFood(true);
+    
+    try {
+      const { GoogleGenAI, Type } = await import('@google/genai');
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      
+      let prompt = "أنت خبير تغذية رياضي. المستخدم سيعطيك وصفاً أو صورة لما أكله. قم بتقدير السعرات الحرارية والبروتين بدقة. أرجع البيانات بصيغة JSON تحتوي على: food_name (اسم الأكلة باختصار)، calories (رقم صحيح)، protein (رقم صحيح).";
+      
+      let contents: any[] = [prompt];
+      if (foodInput.trim()) {
+        contents.push(foodInput);
+      }
+      
+      if (foodImage) {
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve) => {
+          reader.onload = () => resolve((reader.result as string).split(',')[1]);
+          reader.readAsDataURL(foodImage);
+        });
+        const base64Data = await base64Promise;
+        contents.push({
+          inlineData: {
+            data: base64Data,
+            mimeType: foodImage.type
+          }
+        });
+      }
+      
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: contents,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              food_name: { type: Type.STRING },
+              calories: { type: Type.INTEGER },
+              protein: { type: Type.INTEGER }
+            },
+            required: ["food_name", "calories", "protein"]
+          }
+        }
+      });
+      
+      if (response.text) {
+        const data = JSON.parse(response.text);
+        
+        const newLog = [...foodLog, {
+          name: data.food_name,
+          calories: data.calories,
+          protein: data.protein,
+          time: new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })
+        }];
+        
+        setFoodLog(newLog);
+        setConsumedCalories(prev => {
+          const next = prev + data.calories;
+          localStorage.setItem('consumedCalories', String(next));
+          return next;
+        });
+        setConsumedProtein(prev => {
+          const next = prev + data.protein;
+          localStorage.setItem('consumedProtein', String(next));
+          return next;
+        });
+        localStorage.setItem('foodLog', JSON.stringify(newLog));
+        
+        setFoodInput('');
+        setFoodImage(null);
+      }
+    } catch (error) {
+      console.error("Error calculating food:", error);
+      alert("حدث خطأ أثناء حساب السعرات. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsCalculatingFood(false);
+    }
+  };
+
   if (!selectedSession) {
     return (
       <div dir="rtl" className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-emerald-500/30">
@@ -280,54 +428,79 @@ export default function App() {
               <span>خريطة الجلسات</span>
             </button>
             <button 
-              onClick={() => setActiveTab('secrets')}
-              className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'secrets' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            >
-              <Lock className="w-5 h-5" />
-              <span>أسرار الاحتراف</span>
-            </button>
-            <button 
               onClick={() => setActiveTab('nighttime')}
               className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'nighttime' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
             >
               <Clock className="w-5 h-5" />
               <span>الاستشفاء الليلي</span>
             </button>
+            <button 
+              onClick={() => setActiveTab('nutrition')}
+              className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'nutrition' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            >
+              <Flame className="w-5 h-5" />
+              <span>التغذية والسعرات</span>
+            </button>
           </div>
 
           {activeTab === 'training' && (
-            <div className="grid md:grid-cols-2 gap-6">
-              {sessions.map((session) => (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  key={session.id}
-                  onClick={() => {
-                    stopBeep();
-                    setSelectedSession(session);
-                    setCurrentExerciseIndex(0);
-                    setIsResting(false);
-                    setIsRunning(false);
-                    setSpeed(1);
-                  }}
-                  className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-right hover:border-emerald-500/50 transition-colors group relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-0"></div>
-                  <h2 className="text-2xl font-bold mb-2 text-emerald-400">{session.title}</h2>
-                  <div className="flex flex-col gap-2 mb-6">
-                    <p className="text-slate-400">{session.exercises.length} تمارين مخصصة</p>
-                    <p className="text-slate-500 text-sm flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      الوقت الإجمالي: {calculateSessionTotalTime(session)} دقيقة
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center text-emerald-500 font-medium">
-                    <span>ابدأ الجلسة</span>
-                    <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
-                  </div>
-                </motion.button>
-              ))}
+            <div className="space-y-6">
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center mb-8">
+                <h2 className="text-2xl font-bold text-emerald-400 flex items-center justify-center gap-2">
+                  <Calendar className="w-6 h-6" />
+                  جدول اليوم: {weeklySchedule[new Date().getDay()].title}
+                </h2>
+              </div>
+              
+              {weeklySchedule[new Date().getDay()].sessionIds.length === 0 ? (
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
+                  <h3 className="text-3xl font-bold text-cyan-400 mb-4">يوم راحة تامة 🧘‍♂️</h3>
+                  <p className="text-slate-400 text-lg">استمتع بيومك، استرخي، وتناول طعاماً صحياً لتعافي العضلات.</p>
+                </div>
+              ) : weeklySchedule[new Date().getDay()].sessionIds.every(id => completedSessions.includes(id)) ? (
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
+                  <h3 className="text-3xl font-bold text-emerald-400 mb-4">تم انجاز اليوم بنجاح 🏆</h3>
+                  <p className="text-slate-400 text-lg">لقد أكملت جميع الجلسات التدريبية المجدولة لهذا اليوم. بطل!</p>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {weeklySchedule[new Date().getDay()].sessionIds
+                    .filter(id => !completedSessions.includes(id))
+                    .map(id => sessions.find(s => s.id === id))
+                    .filter((s): s is Session => s !== undefined)
+                    .map((session) => (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      key={session.id}
+                      onClick={() => {
+                        stopBeep();
+                        setSelectedSession(session);
+                        setCurrentExerciseIndex(0);
+                        setIsResting(false);
+                        setIsRunning(false);
+                        setSpeed(1);
+                      }}
+                      className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-right hover:border-emerald-500/50 transition-colors group relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-0"></div>
+                      <h2 className="text-2xl font-bold mb-2 text-emerald-400">{session.title}</h2>
+                      <div className="flex flex-col gap-2 mb-6">
+                        <p className="text-slate-400">{session.exercises.length} تمارين مخصصة</p>
+                        <p className="text-slate-500 text-sm flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          الوقت الإجمالي: {calculateSessionTotalTime(session)} دقيقة
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center text-emerald-500 font-medium">
+                        <span>ابدأ الجلسة</span>
+                        <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -358,25 +531,6 @@ export default function App() {
             </div>
           )}
 
-          {activeTab === 'secrets' && (
-            <div className="max-w-2xl mx-auto space-y-6">
-              <h2 className="text-3xl font-bold text-center text-emerald-400 mb-8">أسرار العالم لتطوير مستواك 200%</h2>
-              <div className="space-y-4">
-                {secrets.map((secret, index) => (
-                  <div key={index} className="flex items-center gap-4 bg-slate-900 p-4 rounded-xl border border-slate-800">
-                    <button 
-                      onClick={() => toggleSecret(index)}
-                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${readSecrets.includes(index) ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'}`}
-                    >
-                      {readSecrets.includes(index) && <Check className="w-4 h-4 text-white" />}
-                    </button>
-                    <p className="text-slate-200">{secret}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {activeTab === 'nighttime' && (
             <div className="max-w-2xl mx-auto space-y-6">
               <h2 className="text-3xl font-bold text-center text-emerald-400 mb-8">نظام الاستشفاء الليلي الجديد</h2>
@@ -403,6 +557,223 @@ export default function App() {
               >
                 ابدأ جلسة الاستشفاء الليلي
               </button>
+            </div>
+          )}
+
+          {activeTab === 'nutrition' && (
+            <div className="max-w-4xl mx-auto space-y-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-emerald-400 mb-4">التغذية والسعرات الحرارية</h2>
+                <p className="text-slate-400 text-lg">مصممة خصيصاً لك (وزن 63 كجم، طول 170 سم، عمر 20، طالب)</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
+                  <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Flame className="w-8 h-8 text-emerald-500" />
+                  </div>
+                  <h3 className="text-slate-400 mb-2">السعرات المحروقة اليوم</h3>
+                  <p className="text-3xl font-bold text-white">
+                    {calculateBurnedCalories()} <span className="text-sm text-slate-500">kcal</span>
+                  </p>
+                </div>
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
+                  <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Activity className="w-8 h-8 text-cyan-500" />
+                  </div>
+                  <h3 className="text-slate-400 mb-2">السعرات المطلوبة (للحفاظ والتعويض)</h3>
+                  <p className="text-3xl font-bold text-white">
+                    {2000 + calculateBurnedCalories()} <span className="text-sm text-slate-500">kcal</span>
+                  </p>
+                </div>
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
+                  <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="w-8 h-8 text-purple-500" />
+                  </div>
+                  <h3 className="text-slate-400 mb-2">احتياج البروتين اليومي</h3>
+                  <p className="text-3xl font-bold text-white">
+                    125 <span className="text-sm text-slate-500">جرام</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold text-emerald-400 mb-6">حاسبة السعرات الذكية 📸</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <p className="text-slate-300">اكتب ماذا أكلت أو ارفع صورة لوجبتك، وسنقوم بحساب السعرات والبروتين بدقة.</p>
+                    <textarea
+                      value={foodInput}
+                      onChange={(e) => setFoodInput(e.target.value)}
+                      placeholder="مثال: أكلت 150 جرام صدر دجاج مع كوب أرز أبيض..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none h-32"
+                    />
+                    <div className="flex items-center gap-4">
+                      <label className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl cursor-pointer transition-colors border border-dashed border-slate-600">
+                        <Camera className="w-5 h-5" />
+                        <span>{foodImage ? 'تم اختيار صورة' : 'تصوير / رفع صورة'}</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setFoodImage(e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </label>
+                      <button 
+                        onClick={handleCalculateFood}
+                        disabled={isCalculatingFood || (!foodInput.trim() && !foodImage)}
+                        className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-bold py-3 rounded-xl transition-colors"
+                      >
+                        {isCalculatingFood ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                        <span>حساب وإضافة</span>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-950 rounded-xl p-6 border border-slate-800 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="font-bold text-white">سجل اليوم</h4>
+                      <span className="text-sm text-slate-400">المجموع: {consumedCalories} سعرة / {consumedProtein}g بروتين</span>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-2 max-h-48">
+                      {foodLog.length === 0 ? (
+                        <div className="text-center text-slate-500 py-8">لم تقم بإضافة أي وجبة اليوم.</div>
+                      ) : (
+                        foodLog.map((log, idx) => (
+                          <div key={idx} className="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+                            <div>
+                              <p className="font-bold text-slate-300">{log.name}</p>
+                              <p className="text-xs text-slate-500">{log.time}</p>
+                            </div>
+                            <div className="text-left">
+                              <p className="text-emerald-400 font-bold">{log.calories} kcal</p>
+                              <p className="text-xs text-purple-400">{log.protein}g protein</p>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-slate-800">
+                      {(() => {
+                        const targetCalories = 2000 + calculateBurnedCalories();
+                        const remaining = targetCalories - consumedCalories;
+                        
+                        if (consumedCalories === 0) {
+                          return <p className="text-slate-400 text-sm text-center">ابدأ بتسجيل وجباتك لمعرفة مدى تقدمك.</p>;
+                        }
+                        
+                        if (remaining <= 0) {
+                          return (
+                            <div className="text-center">
+                              <p className="text-emerald-400 font-bold mb-1">أحسنت يا بطل! 🏆</p>
+                              <p className="text-sm text-slate-300">لقد وصلت للحد المطلوب من السعرات اليوم. استمر هكذا!</p>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div>
+                              <p className="text-amber-400 font-bold mb-2 text-center">باقي لك {remaining} سعرة حرارية للوصول للهدف!</p>
+                              <p className="text-xs text-slate-400 mb-2">مخاطر النقص: هدم عضلي، قلة تركيز في الدراسة، إرهاق سريع.</p>
+                              <p className="text-sm text-slate-300">أكلات سريعة لتعويض النقص:</p>
+                              <ul className="text-xs text-slate-400 list-disc list-inside mt-1">
+                                {remaining > 500 && <li>وجبة شوفان مع حليب كامل الدسم ومكسرات وموز.</li>}
+                                {remaining > 300 && remaining <= 500 && <li>ساندويتش زبدة فول سوداني مع كوب حليب.</li>}
+                                {remaining <= 300 && <li>حفنة مكسرات (لوز/جوز) أو كوب زبادي يوناني مع عسل.</li>}
+                              </ul>
+                            </div>
+                          );
+                        }
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold text-emerald-400 mb-6">التعويض الدقيق (بالملي المضبوط 🎯)</h3>
+                
+                {calculateBurnedCalories() === 0 ? (
+                  <div className="text-center text-slate-400 py-8">
+                    <p className="text-xl mb-2">لم تقم بأي مجهود إضافي اليوم.</p>
+                    <p>التزم بسعرات الثبات الخاصة بك (2000 سعرة) مقسمة على وجباتك المعتادة.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6 text-slate-300">
+                    <p className="text-lg mb-4">لقد حرقت <strong className="text-emerald-400">{calculateBurnedCalories()} سعرة حرارية</strong> إضافية. لتعويضها بدقة تامة وبدون أي زيادة في الدهون، اختر إحدى الوجبتين التاليتين لإضافتها ليومك:</p>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Option 1 */}
+                      <div className="bg-slate-800/50 border border-emerald-500/30 rounded-xl p-6">
+                        <h4 className="font-bold text-emerald-400 text-xl mb-4">الخيار الأول: وجبة رئيسية (غداء/عشاء)</h4>
+                        <ul className="space-y-3 text-lg">
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>أرز أبيض (مطبوخ)</span>
+                            <span className="font-bold text-white">{Math.round((calculateBurnedCalories() * 0.55) / 1.3)} جرام</span>
+                          </li>
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>صدر دجاج (مشوي/مسلوق)</span>
+                            <span className="font-bold text-white">{Math.round((calculateBurnedCalories() * 0.35) / 1.65)} جرام</span>
+                          </li>
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>زيت زيتون</span>
+                            <span className="font-bold text-white">{Math.round((calculateBurnedCalories() * 0.10) / 9)} جرام</span>
+                          </li>
+                        </ul>
+                        <div className="mt-4 text-sm text-slate-400 text-center">
+                          إجمالي السعرات: ~{Math.round(
+                            (Math.round((calculateBurnedCalories() * 0.55) / 1.3) * 1.3) + 
+                            (Math.round((calculateBurnedCalories() * 0.35) / 1.65) * 1.65) + 
+                            (Math.round((calculateBurnedCalories() * 0.10) / 9) * 9)
+                          )} kcal
+                        </div>
+                      </div>
+
+                      {/* Option 2 */}
+                      <div className="bg-slate-800/50 border border-cyan-500/30 rounded-xl p-6">
+                        <h4 className="font-bold text-cyan-400 text-xl mb-4">الخيار الثاني: وجبة سريعة (بعد التمرين)</h4>
+                        <ul className="space-y-3 text-lg">
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>موز</span>
+                            <span className="font-bold text-white">ثمرة متوسطة</span>
+                          </li>
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>شوفان</span>
+                            <span className="font-bold text-white">{Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.50) / 3.89)} جرام</span>
+                          </li>
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>بروتين (واي بروتين)</span>
+                            <span className="font-bold text-white">{Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.35) / 4.0)} جرام</span>
+                          </li>
+                          <li className="flex justify-between border-b border-slate-700 pb-2">
+                            <span>زبدة فول سوداني</span>
+                            <span className="font-bold text-white">{Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.15) / 5.88)} جرام</span>
+                          </li>
+                        </ul>
+                        <div className="mt-4 text-sm text-slate-400 text-center">
+                          إجمالي السعرات: ~{Math.round(
+                            105 + 
+                            (Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.50) / 3.89) * 3.89) + 
+                            (Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.35) / 4.0) * 4.0) + 
+                            (Math.round((Math.max(0, calculateBurnedCalories() - 105) * 0.15) / 5.88) * 5.88)
+                          )} kcal
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-800/50 p-4 rounded-xl mt-6">
+                      <p className="text-sm text-slate-400 leading-relaxed">
+                        <strong className="text-emerald-400">ملاحظة هامة لطالب السادس:</strong> هذه الوجبات تعوض مجهودك البدني <strong>فقط</strong>. لا تنسَ أن عقلك يستهلك طاقة كبيرة جداً أثناء المذاكرة والتركيز. استمر في شرب الماء بكثرة (3-4 لتر)، وإذا شعرت بالجوع أثناء الدراسة، تناول حفنة لوز (حوالي 15 حبة) فهي ممتازة للتركيز ولا تزيد الوزن.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
