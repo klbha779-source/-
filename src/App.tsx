@@ -131,6 +131,7 @@ export default function App() {
 
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [selectedDay, setSelectedDay] = useState<number>(new Date().getDay());
   
   const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -466,26 +467,38 @@ export default function App() {
 
           {activeTab === 'training' && (
             <div className="space-y-6">
+              <div className="flex overflow-x-auto pb-4 gap-2 scrollbar-hide">
+                {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map((dayName, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedDay(idx)}
+                    className={`whitespace-nowrap px-4 py-2 rounded-xl font-bold transition-all ${selectedDay === idx ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white'}`}
+                  >
+                    {dayName}
+                  </button>
+                ))}
+              </div>
+
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center mb-8">
                 <h2 className="text-2xl font-bold text-emerald-400 flex items-center justify-center gap-2">
                   <Calendar className="w-6 h-6" />
-                  جدول اليوم: {weeklySchedule[new Date().getDay()].title}
+                  جدول اليوم: {weeklySchedule[selectedDay].title}
                 </h2>
               </div>
               
-              {weeklySchedule[new Date().getDay()].sessionIds.length === 0 ? (
+              {weeklySchedule[selectedDay].sessionIds.length === 0 ? (
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
                   <h3 className="text-3xl font-bold text-cyan-400 mb-4">يوم راحة تامة 🧘‍♂️</h3>
                   <p className="text-slate-400 text-lg">استمتع بيومك، استرخي، وتناول طعاماً صحياً لتعافي العضلات.</p>
                 </div>
-              ) : weeklySchedule[new Date().getDay()].sessionIds.every(id => completedSessions.includes(id)) ? (
+              ) : weeklySchedule[selectedDay].sessionIds.every(id => completedSessions.includes(id)) ? (
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
                   <h3 className="text-3xl font-bold text-emerald-400 mb-4">تم انجاز اليوم بنجاح 🏆</h3>
                   <p className="text-slate-400 text-lg">لقد أكملت جميع الجلسات التدريبية المجدولة لهذا اليوم. بطل!</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-6">
-                  {weeklySchedule[new Date().getDay()].sessionIds
+                  {weeklySchedule[selectedDay].sessionIds
                     .filter(id => !completedSessions.includes(id))
                     .map(id => sessions.find(s => s.id === id))
                     .filter((s): s is Session => s !== undefined)
