@@ -324,8 +324,23 @@ export default function App() {
     setIsCalculatingFood(true);
     
     try {
+      let apiKey = process.env.GEMINI_API_KEY;
+      // Handle the case where the app is exported and API key is missing
+      if (!apiKey || apiKey === 'undefined' || apiKey === '""' || apiKey === "''") {
+        apiKey = localStorage.getItem('userGeminiApiKey') || '';
+        if (!apiKey) {
+          apiKey = window.prompt("أنت تستخدم التطبيق كموقع خارجي. يرجى إدخال مفتاح Gemini API الخاص بك لتشغيل الذكاء الاصطناعي:") || '';
+          if (apiKey) {
+            localStorage.setItem('userGeminiApiKey', apiKey);
+          } else {
+            setIsCalculatingFood(false);
+            return;
+          }
+        }
+      }
+
       const { GoogleGenAI, Type } = await import('@google/genai');
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: apiKey });
       
       let prompt = "أنت خبير تغذية رياضي. المستخدم سيعطيك وصفاً أو صورة لما أكله. قم بتقدير السعرات الحرارية والبروتين بدقة. أرجع البيانات بصيغة JSON تحتوي على: food_name (اسم الأكلة باختصار)، calories (رقم صحيح)، protein (رقم صحيح).";
       
@@ -392,9 +407,15 @@ export default function App() {
         setFoodInput('');
         setFoodImage(null);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error calculating food:", error);
-      alert("حدث خطأ أثناء حساب السعرات. يرجى المحاولة مرة أخرى.");
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('API key') || error?.status === 403 || error?.status === 400) {
+        localStorage.removeItem('userGeminiApiKey');
+        alert("مفتاح API غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى وإدخال مفتاح صحيح.");
+      } else {
+        alert(`حدث خطأ أثناء حساب السعرات: ${errorMessage || 'يرجى المحاولة مرة أخرى.'}`);
+      }
     } finally {
       setIsCalculatingFood(false);
     }
