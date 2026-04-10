@@ -18,6 +18,72 @@ export type Session = {
 
 export const sessions: Session[] = [
   {
+    id: 'golden_warmup',
+    title: 'الروتين الذهبي (10 دقائق يومياً)',
+    exercises: [
+      {
+        id: 'gw_1',
+        title: 'أعظم إطالة في العالم (The World\'s Greatest Stretch)',
+        durationMinutes: 2,
+        description: 'وضعية الطعن (Lunge) -> كوعك للمس الأرض -> يدك للسماء -> ثم ارجع بوزنك للخلف لفرد ركبتك الأمامية (لتمديد الخلفيات).',
+        benefits: 'تفتح الحوض، تمدد الخلفيات، تحرر العمود الفقري، وتفعل الكاحل.',
+        targets: 'الحوض، الخلفيات، العمود الفقري',
+        restDurationSeconds: 0,
+        setsAndReps: '3 تكرارات لكل رجل ببطء'
+      },
+      {
+        id: 'gw_2',
+        title: 'تدفق الـ 90/90 مع القرفصاء الجانبي (90/90 to Cossack)',
+        durationMinutes: 2,
+        description: 'اجلس على الأرض واجعل ركبتيك بزاوية 90 درجة. قم بتبديل الاتجاه دون استخدام يديك. ثم قم بالوقوف مباشرة وقم بأداء "Cossack Squat" (النزول على رجل واحدة مع فرد الأخرى).',
+        benefits: 'تحمي "العضلة الضامة" من التمزق وتمنحك مرونة خرافية في الدوران والمراوغة.',
+        targets: 'الحوض، العضلة الضامة',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقتين متواصلة'
+      },
+      {
+        id: 'gw_3',
+        title: 'الكلب الناظر لأسفل إلى الدودة (Downward Dog to Inchworm)',
+        durationMinutes: 2,
+        description: 'من وضعية الوقوف، المس الأرض وامشِ بيديك حتى تصبح في وضعية الضغط، ثم ارفع حوضك للسماء، ثم عد بيديك لقدميك.',
+        benefits: 'تمدد كامل للسلسلة الخلفية (السمانة + الخلفيات + الظهر)، وتقوي الكتف لتحمل الالتحامات.',
+        targets: 'السلسلة الخلفية، الكتف',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقتين متواصلة'
+      },
+      {
+        id: 'gw_4',
+        title: 'توازن الرجل الواحدة مع الطيران (Single Leg RDL to High Knee)',
+        durationMinutes: 2,
+        description: 'قف على رجل واحدة، انحنِ للأمام بظهر مستقيم كأنك تطير، وعند العودة، ارفع ركبتك بقوة لأعلى واثبت ثانية.',
+        benefits: 'تفعيل الـ Hamstrings، تقوية أربطة الكاحل، وتحسين التوازن العصب حركي.',
+        targets: 'Hamstrings، أربطة الكاحل، التوازن',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقتين متواصلة'
+      },
+      {
+        id: 'gw_5',
+        title: 'وضعية العقرب الديناميكية (Scorpion Stretch)',
+        durationMinutes: 1,
+        description: 'نم على بطنك، افرد ذراعيك بجانبك، وحاول لمس يدك اليمين بقدمك اليسار من خلف ظهرك، وبالتبادل.',
+        benefits: 'تفتح عضلات البطن المائلة والصدر، وتفك أي تشنج في أسفل الظهر.',
+        targets: 'البطن المائلة، الصدر، أسفل الظهر',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقة متواصلة'
+      },
+      {
+        id: 'gw_6',
+        title: 'الإيقاظ العصبي (Neural Wake-up)',
+        durationMinutes: 1,
+        description: 'قفزات سريعة جداً وقصيرة باستخدام مشط القدم فقط (Pogo Jumps)، ثم جري سريع جداً في المكان لمدة 10 ثوانٍ (Fast Feet).',
+        benefits: 'ترفع سرعة رد فعل العضلات قبل أن تلمس الكرة.',
+        targets: 'الجهاز العصبي، رد الفعل',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقة متواصلة'
+      }
+    ]
+  },
+  {
     id: 'skills_mastery',
     title: 'الجدول المهاري النهائي (75 دقيقة)',
     exercises: [
@@ -558,17 +624,18 @@ export const sessions: Session[] = [
 ];
 
 export const weeklySchedule: Record<number, { title: string, sessionIds: string[] }> = {
-  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['skills_mastery', 'physical_day1', 'sprint_stairs'] },
-  1: { title: 'الاثنين: مهارة فقط', sessionIds: ['skills_mastery'] },
-  2: { title: 'الثلاثاء: راحة تامة', sessionIds: [] },
-  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['skills_mastery', 'physical_day2', 'sprint_only'] },
-  4: { title: 'الخميس: مهارة فقط', sessionIds: ['skills_mastery'] },
-  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['skills_mastery', 'physical_light'] },
-  6: { title: 'السبت: مهارة خفيفة أو 1 ضد 1', sessionIds: ['skills_light'] }
+  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_day1', 'sprint_stairs'] },
+  1: { title: 'الاثنين: مهارة فقط', sessionIds: ['golden_warmup', 'skills_mastery'] },
+  2: { title: 'الثلاثاء: راحة تامة (إحماء فقط)', sessionIds: ['golden_warmup'] },
+  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_day2', 'sprint_only'] },
+  4: { title: 'الخميس: مهارة فقط', sessionIds: ['golden_warmup', 'skills_mastery'] },
+  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_light'] },
+  6: { title: 'السبت: مهارة خفيفة أو 1 ضد 1', sessionIds: ['golden_warmup', 'skills_light'] }
 };
 
 export const getCaloriesForSession = (sessionId: string): number => {
   switch (sessionId) {
+    case 'golden_warmup': return 50;
     case 'skills_mastery': return 450;
     case 'physical_day1': return 350;
     case 'physical_day2': return 350;

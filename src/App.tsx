@@ -95,6 +95,10 @@ export default function App() {
   const [foodImage, setFoodImage] = useState<File | null>(null);
   const [isCalculatingFood, setIsCalculatingFood] = useState(false);
 
+  const [customActivities, setCustomActivities] = useState<{name: string, calories: number, time: string}[]>([]);
+  const [activityInput, setActivityInput] = useState('');
+  const [isCalculatingActivity, setIsCalculatingActivity] = useState(false);
+
   useEffect(() => {
     const today = new Date().toDateString();
     const savedDate = localStorage.getItem('lastDate');
@@ -105,11 +109,13 @@ export default function App() {
       localStorage.setItem('consumedCalories', '0');
       localStorage.setItem('consumedProtein', '0');
       localStorage.setItem('foodLog', JSON.stringify([]));
+      localStorage.setItem('customActivities', JSON.stringify([]));
       setCompletedSessions([]);
       setCompletedExercises([]);
       setConsumedCalories(0);
       setConsumedProtein(0);
       setFoodLog([]);
+      setCustomActivities([]);
     } else {
       const savedSessions = localStorage.getItem('completedSessions');
       if (savedSessions) setCompletedSessions(JSON.parse(savedSessions));
@@ -121,6 +127,8 @@ export default function App() {
       if (savedProtein) setConsumedProtein(Number(savedProtein));
       const savedLog = localStorage.getItem('foodLog');
       if (savedLog) setFoodLog(JSON.parse(savedLog));
+      const savedActivities = localStorage.getItem('customActivities');
+      if (savedActivities) setCustomActivities(JSON.parse(savedActivities));
     }
 
     const hour = new Date().getHours();
@@ -317,7 +325,78 @@ export default function App() {
         }
       }
     });
+    customActivities.forEach(act => {
+      total += act.calories;
+    });
     return Math.round(total);
+  };
+
+  const handleCalculateActivity = async () => {
+    if (!activityInput.trim()) return;
+    setIsCalculatingActivity(true);
+    
+    try {
+      let apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'undefined' || apiKey === '""' || apiKey === "''") {
+        apiKey = localStorage.getItem('userGeminiApiKey') || '';
+        if (!apiKey) {
+          apiKey = window.prompt("أنت تستخدم التطبيق كموقع خارجي. يرجى إدخال مفتاح Gemini API الخاص بك لتشغيل الذكاء الاصطناعي:") || '';
+          if (apiKey) {
+            localStorage.setItem('userGeminiApiKey', apiKey);
+          } else {
+            setIsCalculatingActivity(false);
+            return;
+          }
+        }
+      }
+
+      const { GoogleGenAI, Type } = await import('@google/genai');
+      const ai = new GoogleGenAI({ apiKey: apiKey });
+      
+      let prompt = "أنت خبير رياضي. المستخدم (وزنه 63 كجم) سيخبرك بمجهود بدني إضافي قام به اليوم. قم بتقدير السعرات الحرارية المحروقة بدقة. أرجع البيانات بصيغة JSON تحتوي على: activity_name (اسم النشاط باختصار)، calories (رقم صحيح للسعرات المحروقة).";
+      
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: [prompt, activityInput],
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              activity_name: { type: Type.STRING },
+              calories: { type: Type.INTEGER }
+            },
+            required: ["activity_name", "calories"]
+          }
+        }
+      });
+      
+      if (response.text) {
+        const data = JSON.parse(response.text);
+        
+        const newLog = [...customActivities, {
+          name: data.activity_name,
+          calories: data.calories,
+          time: new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })
+        }];
+        
+        setCustomActivities(newLog);
+        localStorage.setItem('customActivities', JSON.stringify(newLog));
+        
+        setActivityInput('');
+      }
+    } catch (error: any) {
+      console.error("Error calculating activity:", error);
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('API key') || error?.status === 403 || error?.status === 400) {
+        localStorage.removeItem('userGeminiApiKey');
+        alert("مفتاح API غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى وإدخال مفتاح صحيح.");
+      } else {
+        alert(`حدث خطأ أثناء حساب المجهود: ${errorMessage || 'يرجى المحاولة مرة أخرى.'}`);
+      }
+    } finally {
+      setIsCalculatingActivity(false);
+    }
   };
 
   const handleCalculateFood = async () => {
@@ -366,7 +445,7 @@ export default function App() {
       }
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: contents,
         config: {
           responseMimeType: "application/json",
@@ -491,48 +570,60 @@ export default function App() {
                   <h3 className="text-3xl font-bold text-cyan-400 mb-4">يوم راحة تامة 🧘‍♂️</h3>
                   <p className="text-slate-400 text-lg">استمتع بيومك، استرخي، وتناول طعاماً صحياً لتعافي العضلات.</p>
                 </div>
-              ) : weeklySchedule[selectedDay].sessionIds.every(id => completedSessions.includes(id)) ? (
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
-                  <h3 className="text-3xl font-bold text-emerald-400 mb-4">تم انجاز اليوم بنجاح 🏆</h3>
-                  <p className="text-slate-400 text-lg">لقد أكملت جميع الجلسات التدريبية المجدولة لهذا اليوم. بطل!</p>
-                </div>
               ) : (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {weeklySchedule[selectedDay].sessionIds
-                    .filter(id => !completedSessions.includes(id))
-                    .map(id => sessions.find(s => s.id === id))
-                    .filter((s): s is Session => s !== undefined)
-                    .map((session) => (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      key={session.id}
-                      onClick={() => {
-                        stopBeep();
-                        setSelectedSession(session);
-                        setCurrentExerciseIndex(0);
-                        setIsResting(false);
-                        setIsRunning(false);
-                        setSpeed(1);
-                      }}
-                      className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-right hover:border-emerald-500/50 transition-colors group relative overflow-hidden"
-                    >
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-0"></div>
-                      <h2 className="text-2xl font-bold mb-2 text-emerald-400">{session.title}</h2>
-                      <div className="flex flex-col gap-2 mb-6">
-                        <p className="text-slate-400">{session.exercises.length} تمارين مخصصة</p>
-                        <p className="text-slate-500 text-sm flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          الوقت الإجمالي: {calculateSessionTotalTime(session)} دقيقة
-                        </p>
-                      </div>
-                      
-                      <div className="flex items-center text-emerald-500 font-medium">
-                        <span>ابدأ الجلسة</span>
-                        <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
-                      </div>
-                    </motion.button>
-                  ))}
+                <div className="space-y-6">
+                  {weeklySchedule[selectedDay].sessionIds.every(id => completedSessions.includes(id)) && (
+                    <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-2xl p-6 text-center">
+                      <h3 className="text-2xl font-bold text-emerald-400 mb-2">تم انجاز اليوم بنجاح 🏆</h3>
+                      <p className="text-emerald-200/70 text-sm">لقد أكملت جميع الجلسات التدريبية المجدولة لهذا اليوم. بطل!</p>
+                    </div>
+                  )}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {weeklySchedule[selectedDay].sessionIds
+                      .map(id => sessions.find(s => s.id === id))
+                      .filter((s): s is Session => s !== undefined)
+                      .map((session) => {
+                        const isCompleted = completedSessions.includes(session.id);
+                        return (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            key={session.id}
+                            onClick={() => {
+                              stopBeep();
+                              setSelectedSession(session);
+                              setCurrentExerciseIndex(0);
+                              setIsResting(false);
+                              setIsRunning(false);
+                              setSpeed(1);
+                            }}
+                            className={`bg-slate-900 border ${isCompleted ? 'border-emerald-500/50' : 'border-slate-800'} rounded-2xl p-8 text-right hover:border-emerald-500/50 transition-colors group relative overflow-hidden`}
+                          >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-0"></div>
+                            <div className="flex justify-between items-start mb-2">
+                              <h2 className="text-2xl font-bold text-emerald-400">{session.title}</h2>
+                              {isCompleted && (
+                                <span className="bg-emerald-500/20 text-emerald-400 p-2 rounded-full" title="مكتمل">
+                                  <CheckCircle2 className="w-5 h-5" />
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-col gap-2 mb-6">
+                              <p className="text-slate-400">{session.exercises.length} تمارين مخصصة</p>
+                              <p className="text-slate-500 text-sm flex items-center gap-1">
+                                <Clock className="w-4 h-4" />
+                                الوقت الإجمالي: {calculateSessionTotalTime(session)} دقيقة
+                              </p>
+                            </div>
+                            
+                            <div className={`flex items-center font-medium ${isCompleted ? 'text-emerald-400' : 'text-emerald-500'}`}>
+                              <span>{isCompleted ? 'إعادة الجلسة' : 'ابدأ الجلسة'}</span>
+                              <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                  </div>
                 </div>
               )}
             </div>
@@ -724,6 +815,56 @@ export default function App() {
                           );
                         }
                       })()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold text-emerald-400 mb-6">حاسبة المجهود الإضافي 🏃‍♂️</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <p className="text-slate-300">هل قمت بمجهود بدني خارج الجدول؟ (مثل: لعبت مباراة، مشيت 10 آلاف خطوة، سباحة). اكتبه هنا وسنحسب السعرات المحروقة بدقة.</p>
+                    <textarea
+                      value={activityInput}
+                      onChange={(e) => setActivityInput(e.target.value)}
+                      placeholder="مثال: لعبت مباراة كرة قدم خماسي لمدة ساعة كاملة..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none h-32"
+                    />
+                    <button 
+                      onClick={handleCalculateActivity}
+                      disabled={isCalculatingActivity || !activityInput.trim()}
+                      className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-bold py-3 rounded-xl transition-colors"
+                    >
+                      {isCalculatingActivity ? <Loader2 className="w-5 h-5 animate-spin" /> : <Activity className="w-5 h-5" />}
+                      <span>حساب المجهود وإضافته</span>
+                    </button>
+                  </div>
+                  
+                  <div className="bg-slate-950 rounded-xl p-6 border border-slate-800 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="font-bold text-white">سجل المجهود الإضافي</h4>
+                      <span className="text-sm text-slate-400">
+                        المجموع: {customActivities.reduce((sum, act) => sum + act.calories, 0)} سعرة
+                      </span>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-2 max-h-48">
+                      {customActivities.length === 0 ? (
+                        <div className="text-center text-slate-500 py-8">لم تقم بإضافة أي مجهود إضافي اليوم.</div>
+                      ) : (
+                        customActivities.map((log, idx) => (
+                          <div key={idx} className="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+                            <div>
+                              <p className="font-bold text-slate-300">{log.name}</p>
+                              <p className="text-xs text-slate-500">{log.time}</p>
+                            </div>
+                            <div className="text-left">
+                              <p className="text-emerald-400 font-bold">+{log.calories} kcal</p>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
