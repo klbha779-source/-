@@ -620,17 +620,158 @@ export const sessions: Session[] = [
         setsAndReps: '15 دقيقة'
       }
     ]
+  },
+  {
+    id: 'daily_lubrication',
+    title: 'بروتوكول التزييت اليومي (صيانة المفاصل)',
+    exercises: [
+      {
+        id: 'dl_1',
+        title: 'رفع القصبة (Tibialis Raises)',
+        durationMinutes: 2,
+        description: 'قف مستنداً بظهرك على الحائط، وابعد قدميك قليلاً. ارفع أصابع قدميك للأعلى ببطء ثم أنزلها.',
+        benefits: 'يقوي العضلة الأمامية للساق ويحمي الركبة من الآلام.',
+        targets: 'قصبة الساق (Tibialis Anterior)',
+        restDurationSeconds: 30,
+        setsAndReps: '25 تكراراً'
+      },
+      {
+        id: 'dl_2',
+        title: 'إطالة الأريكة (Couch Stretch)',
+        durationMinutes: 2,
+        description: 'ضع ركبة واحدة على الأرض وقدمك مسندة على حائط أو أريكة خلفك. ادفع حوضك للأمام ببطء.',
+        benefits: 'يفتح الحوض ويطيل العضلة الرباعية بقوة.',
+        targets: 'الحوض، العضلة الرباعية',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقة واحدة لكل قدم'
+      },
+      {
+        id: 'dl_3',
+        title: 'المشي العكسي (Reverse Walking)',
+        durationMinutes: 5,
+        description: 'امشِ للخلف بخطوات ثابتة، مع التركيز على دفع الأرض بمشط القدم.',
+        benefits: 'يزيت الركبة ويزيد من تدفق الدم للأوتار.',
+        targets: 'الركبة، الأوتار',
+        restDurationSeconds: 0,
+        setsAndReps: '3 إلى 5 دقائق'
+      },
+      {
+        id: 'dl_4',
+        title: 'صعود باتريك العكسي (Patrick Step)',
+        durationMinutes: 3,
+        description: 'قف على قدم واحدة على درجة صغيرة، وانزل القدم الأخرى ببطء لتلمس الأرض بالكعب ثم اصعد.',
+        benefits: 'يقوي أوتار الركبة ويعالج آلامها.',
+        targets: 'الركبة، العضلة الرباعية (VMO)',
+        restDurationSeconds: 30,
+        setsAndReps: '15 تكراراً لكل قدم'
+      },
+      {
+        id: 'dl_5',
+        title: 'الجلوس على الحائط (Wall Sit)',
+        durationMinutes: 1,
+        description: 'استند بظهرك على الحائط وانزل بوضعية الجلوس بزاوية 90 درجة. ركز على تثبيت قدميك بقوة كـ "مخلب النمر".',
+        benefits: 'يبني تحمل أوتار الركبة ويفعل العضلات المثبتة.',
+        targets: 'العضلة الرباعية، الأوتار',
+        restDurationSeconds: 0,
+        setsAndReps: 'دقيقة واحدة'
+      }
+    ]
+  },
+  {
+    id: 'fascia_monday',
+    title: 'جلسة الفاشيا: السلسلة الخلفية والحلزونية',
+    exercises: [
+      {
+        id: 'fm_1',
+        title: 'انحناء جيفرسون (Jefferson Curl)',
+        durationMinutes: 5,
+        description: 'قف على صندوق صغير بوزن خفيف جداً. انزل ببطء شديد (فقرة فقرة) من رقبتك حتى أسفل ظهرك، ثم اصعد بنفس البطء. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يعيد هيكلة فاشيا الظهر بالكامل ويزيد مرونة العمود الفقري.',
+        targets: 'السلسلة الخلفية، العمود الفقري',
+        restDurationSeconds: 60,
+        setsAndReps: '3 جولات، 5-10 تكرارات'
+      },
+      {
+        id: 'fm_2',
+        title: 'الضغط الهندوسي (Hindu Pushups)',
+        durationMinutes: 5,
+        description: 'ابدأ بوضعية الكلب الناظر لأسفل، انزل بصدرك مقوساً للأمام وللأعلى حتى وضعية الكوبرا، ثم عد للخلف. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يفكك تيبس الكتفين والعمود الفقري ويقوي السلسلة الحلزونية.',
+        targets: 'الكتف، الصدر، العمود الفقري',
+        restDurationSeconds: 60,
+        setsAndReps: '3 جولات، 5-10 تكرارات'
+      }
+    ]
+  },
+  {
+    id: 'fascia_thursday',
+    title: 'جلسة الفاشيا: السلسلة الأمامية والجانبية',
+    exercises: [
+      {
+        id: 'ft_1',
+        title: 'النورديك العكسي (Reverse Nordic)',
+        durationMinutes: 5,
+        description: 'اجلس على ركبتيك، وارجع بجذعك للخلف ببطء شديد مع الحفاظ على استقامة جسمك من الركبة للرأس. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يطيل ويقوي فاشيا العضلة الرباعية ويحمي الركبة.',
+        targets: 'العضلة الرباعية، السلسلة الأمامية',
+        restDurationSeconds: 60,
+        setsAndReps: '3 جولات، 6-8 تكرارات'
+      },
+      {
+        id: 'ft_2',
+        title: 'سكوات القوزاق (Cossack Squat)',
+        durationMinutes: 5,
+        description: 'قف بفتحة قدمين واسعة، انزل ببطء على رجل واحدة مع إبقاء الأخرى مفرودة وموجهة للأعلى. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يعيد هيكلة فاشيا العضلة الضامة ويفتح الحوض الجانبي.',
+        targets: 'العضلة الضامة، الحوض',
+        restDurationSeconds: 60,
+        setsAndReps: '3 جولات، 6-8 تكرارات'
+      }
+    ]
+  },
+  {
+    id: 'fascia_saturday',
+    title: 'جلسة الفاشيا الشاملة (Full Reset)',
+    exercises: [
+      {
+        id: 'fs_1',
+        title: 'انحناء جيفرسون (Jefferson Curl)',
+        durationMinutes: 3,
+        description: 'انزل ببطء شديد (فقرة فقرة) ثم اصعد ببطء. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        targets: 'السلسلة الخلفية',
+        restDurationSeconds: 60,
+        setsAndReps: 'جولتين بتركيز فائق'
+      },
+      {
+        id: 'fs_2',
+        title: 'الضغط الهندوسي (Hindu Pushups)',
+        durationMinutes: 3,
+        description: 'حركة انسيابية من الكلب الناظر لأسفل إلى الكوبرا. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        targets: 'الكتف، العمود الفقري',
+        restDurationSeconds: 60,
+        setsAndReps: 'جولتين بتركيز فائق'
+      },
+      {
+        id: 'fs_3',
+        title: 'النورديك العكسي (Reverse Nordic)',
+        durationMinutes: 3,
+        description: 'ارجع بجذعك للخلف ببطء شديد من وضعية الجلوس على الركبتين. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        targets: 'العضلة الرباعية',
+        restDurationSeconds: 60,
+        setsAndReps: 'جولتين بتركيز فائق'
+      }
+    ]
   }
 ];
 
 export const weeklySchedule: Record<number, { title: string, sessionIds: string[] }> = {
-  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_day1', 'sprint_stairs'] },
-  1: { title: 'الاثنين: مهارة فقط', sessionIds: ['golden_warmup', 'skills_mastery'] },
-  2: { title: 'الثلاثاء: راحة تامة (إحماء فقط)', sessionIds: ['golden_warmup'] },
-  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_day2', 'sprint_only'] },
-  4: { title: 'الخميس: مهارة فقط', sessionIds: ['golden_warmup', 'skills_mastery'] },
-  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['golden_warmup', 'skills_mastery', 'physical_light'] },
-  6: { title: 'السبت: مهارة خفيفة أو 1 ضد 1', sessionIds: ['golden_warmup', 'skills_light'] }
+  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_day1', 'sprint_stairs'] },
+  1: { title: 'الاثنين: مهارة + فاشيا (خلفية)', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'fascia_monday'] },
+  2: { title: 'الثلاثاء: راحة تامة (تزييت يومي فقط)', sessionIds: ['daily_lubrication'] },
+  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_day2', 'sprint_only'] },
+  4: { title: 'الخميس: مهارة + فاشيا (أمامية)', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'fascia_thursday'] },
+  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_light'] },
+  6: { title: 'السبت: مهارة خفيفة + فاشيا شاملة', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_light', 'fascia_saturday'] }
 };
 
 export const getCaloriesForSession = (sessionId: string): number => {
@@ -644,6 +785,10 @@ export const getCaloriesForSession = (sessionId: string): number => {
     case 'physical_light': return 200;
     case 'skills_light': return 200;
     case 'night_recovery': return 50;
+    case 'daily_lubrication': return 80;
+    case 'fascia_monday': return 100;
+    case 'fascia_thursday': return 100;
+    case 'fascia_saturday': return 120;
     default: return 100;
   }
 };

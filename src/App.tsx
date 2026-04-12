@@ -618,10 +618,10 @@ export default function App() {
 
   if (!selectedSession) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-50 font-sans selection:bg-emerald-500/30 transition-colors duration-300 pb-24 md:pb-0">
+      <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-50 font-sans selection:bg-emerald-500/30 transition-colors duration-300 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
         
         {/* Top Header */}
-        <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
+        <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
               الزون الاحترافي
@@ -646,7 +646,7 @@ export default function App() {
         </header>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
           <div className="flex justify-around items-center h-16 px-2">
             <MobileNavButton active={activeTab === 'training'} onClick={() => setActiveTab('training')} icon={<Dumbbell className="w-6 h-6" />} text="التدريب" />
             <MobileNavButton active={activeTab === 'roadmap'} onClick={() => setActiveTab('roadmap')} icon={<Map className="w-6 h-6" />} text="الخريطة" />
@@ -1188,9 +1188,9 @@ export default function App() {
     : null;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-50 font-sans flex flex-col transition-colors duration-300">
+    <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-50 font-sans flex flex-col transition-colors duration-300 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
       {/* Header */}
-      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 p-4 flex justify-between items-center sticky top-0 z-40">
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] flex justify-between items-center sticky top-0 z-40">
         <div>
           <h2 className="text-xl font-bold text-emerald-500 dark:text-emerald-400">{selectedSession.title}</h2>
           <p className="text-sm text-gray-500 dark:text-slate-400">
