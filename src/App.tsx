@@ -1391,6 +1391,18 @@ export default function App() {
                     </p>
                   </div>
 
+                  {currentExercise.benefits && (
+                    <div className="bg-cyan-50 dark:bg-cyan-950/20 border border-cyan-200 dark:border-cyan-900/50 rounded-2xl p-6 shadow-sm">
+                      <div className="flex items-center gap-3 mb-3 text-cyan-600 dark:text-cyan-400">
+                        <Zap className="w-6 h-6" />
+                        <h3 className="text-xl font-bold">فائدة التمرين</h3>
+                      </div>
+                      <p className="text-cyan-800 dark:text-cyan-100/90 leading-relaxed font-medium">
+                        {currentExercise.benefits}
+                      </p>
+                    </div>
+                  )}
+
                   {currentExercise.setsAndReps && (
                     <div className="bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/50 rounded-2xl p-6 relative overflow-hidden shadow-sm">
                       <div className="absolute top-0 right-0 w-2 h-full bg-purple-500"></div>

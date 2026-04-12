@@ -219,6 +219,7 @@ export const sessions: Session[] = [
         title: 'التوازن الليلي الاحترافي (على وسادة)',
         durationMinutes: 6,
         description: 'قف على وسادة، ارفع قدمك، أغلق عينيك. حاول الثبات. مهما سقطت، عُد للوضعية فوراً. احسب عدد السقوطات لكل قدم لتعرف قدمك الضعيفة.',
+        benefits: 'يبرمج الجهاز العصبي على الثبات ويحمي الكاحل من الالتواءات المفاجئة.',
         targets: 'التوازن العصبي، الأربطة، الوقاية من الإصابات',
         restDurationSeconds: 10,
         setsAndReps: '3 دقائق لكل قدم (قبل النوم)'
@@ -228,6 +229,7 @@ export const sessions: Session[] = [
         title: 'تنفس الاستشفاء العميق',
         durationMinutes: 3,
         description: 'استلقِ بوضعية مريحة، ركز على شهيق عميق وزفير أطول لتهدئة الجهاز العصبي.',
+        benefits: 'يخفض هرمون الكورتيزول (الهدم) ويرفع هرمونات البناء والاستشفاء العضلي.',
         targets: 'الجهاز العصبي، الاستشفاء',
         restDurationSeconds: 10,
         setsAndReps: '3 دقائق متواصلة'
@@ -237,6 +239,7 @@ export const sessions: Session[] = [
         title: 'تحرير العضلات (Mobility)',
         durationMinutes: 4,
         description: 'حركات خفيفة لفك تشنجات العضلات بعد يوم شاق.',
+        benefits: 'يفكك العقد العضلية ويزيد من تدفق الدم المحمل بالغذاء للألياف الممزقة.',
         targets: 'المرونة، فك التشنجات',
         restDurationSeconds: 10,
         setsAndReps: '4 دقائق متنوعة'
@@ -252,6 +255,7 @@ export const sessions: Session[] = [
         title: 'المشي العكسي (Reverse Walking)',
         durationMinutes: 3,
         description: 'المشي للخلف لإحماء الأوتار.',
+        benefits: 'يضخ الدم في أوتار الركبة ويعالج آلام الرضفة (Patellar Tendon).',
         targets: 'إحماء أوتار الركبة',
         restDurationSeconds: 60,
         setsAndReps: '3 دقائق'
@@ -261,6 +265,7 @@ export const sessions: Session[] = [
         title: 'رفع القصبة (Tibialis Raises)',
         durationMinutes: 5,
         description: 'استند للحائط وارفع أمشاط قدميك.',
+        benefits: 'يبني درعاً حول الكاحل ويمنع آلام قصبة الساق (Shin Splints).',
         targets: 'درع الكاحل، العضلة الأمامية للساق',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 25 تكراراً'
@@ -270,6 +275,7 @@ export const sessions: Session[] = [
         title: 'رفع الأمشاط (Calf Raises)',
         durationMinutes: 4,
         description: 'رفع الكعبين للأعلى والأسفل لتقوية السمانة.',
+        benefits: 'يقوي وتر العرقوب (أخيل) ويزيد من قوة القفز والانطلاق.',
         targets: 'السمانة، وتر العرقوب',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 20 تكراراً'
@@ -279,6 +285,7 @@ export const sessions: Session[] = [
         title: 'قفزات الصندوق (Depth Jumps)',
         durationMinutes: 6,
         description: 'القفز من صندوق والهبوط ثم القفز فوراً لأعلى.',
+        benefits: 'يفجر الألياف العضلية السريعة ويمنحك ارتقاءً أسطورياً في الرأسيات.',
         targets: 'انفجار عصبي، قوة ارتدادية',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 5 قفزات'
@@ -288,6 +295,7 @@ export const sessions: Session[] = [
         title: 'سكوات القفز (Jump Squats)',
         durationMinutes: 6,
         description: 'سكوات مع قفزة انفجارية بأوزان خفيفة.',
+        benefits: 'يحول القوة المطلقة إلى قوة انفجارية لحظية.',
         targets: 'القوة الانفجارية للفخذين',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 6 تكرارات'
@@ -297,6 +305,7 @@ export const sessions: Session[] = [
         title: 'القفز السريع (Pogo Jumps)',
         durationMinutes: 4,
         description: 'قفزات سريعة وقصيرة على أمشاط القدمين.',
+        benefits: 'يجعل كاحلك مثل الزنبرك، مما يقلل زمن ملامسة الأرض ويزيد سرعتك.',
         targets: 'نوابض الكاحل',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 30 ثانية'
@@ -306,6 +315,7 @@ export const sessions: Session[] = [
         title: 'السكوات البلغاري (Bulgarian Split Squat)',
         durationMinutes: 12,
         description: 'التمرين الملك. أثقل وزن أسمنتي، نزول بطيء في 5 ثوانٍ.',
+        benefits: 'يعالج عدم التناسق بين القدمين ويبني قوة غاشمة في الالتحامات.',
         targets: 'القوة الغاشمة، استقرار الركبة',
         restDurationSeconds: 120,
         setsAndReps: '4 جولات × 8 تكرارات (لكل قدم)'
@@ -315,6 +325,7 @@ export const sessions: Session[] = [
         title: 'الطعنات الأمامية (Walking Lunges)',
         durationMinutes: 5,
         description: 'طعنات للأمام باستخدام بار أسمنتي.',
+        benefits: 'يحسن التوازن الحركي ويقوي العضلات المثبتة للحوض.',
         targets: 'قوة الفخذين، التوازن الحركي',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 12 خطوة'
@@ -324,6 +335,7 @@ export const sessions: Session[] = [
         title: 'صعود ونزول الدرجة (Step-downs)',
         durationMinutes: 7,
         description: 'نزول بطيء من درجة بوزن إضافي.',
+        benefits: 'يرمم ركبتك ويجعلها قادرة على تحمل أوزان مضاعفة أثناء الهبوط.',
         targets: 'ترميم الركبة، وتر الرضفة',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 10 تكرارات'
@@ -333,6 +345,7 @@ export const sessions: Session[] = [
         title: 'ضغط الصدر الأرضي (Floor Press)',
         durationMinutes: 7,
         description: 'ضغط بالدمبلز وأنت مستلقٍ على الأرض.',
+        benefits: 'يمنحك صلابة في الجزء العلوي للفوز بالالتحامات الكتف بالكتف.',
         targets: 'التحام الكتف، قوة الصدر',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 10 تكرارات'
@@ -342,6 +355,7 @@ export const sessions: Session[] = [
         title: 'الضغط العلوي (Overhead Press)',
         durationMinutes: 5,
         description: 'دفع الوزن للأعلى فوق الرأس.',
+        benefits: 'يقوي الأكتاف ويحميك من الخلع أثناء السقوط.',
         targets: 'قوة الأكتاف',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 10 تكرارات'
@@ -351,6 +365,7 @@ export const sessions: Session[] = [
         title: 'تجديف البار (Bent-over Row)',
         durationMinutes: 7,
         description: 'سحب البار للبطن مع انحناء الظهر.',
+        benefits: 'يبني ظهراً صلباً كدرع يحميك من المدافعين من الخلف.',
         targets: 'قوة الظهر',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 10 تكرارات'
@@ -360,6 +375,7 @@ export const sessions: Session[] = [
         title: 'الضغط الانفجاري (Plyo Push-ups)',
         durationMinutes: 4,
         description: 'تمرين ضغط مع دفع الجسم بقوة للأعلى (تصفيق إن أمكن).',
+        benefits: 'يزيد من سرعة رد فعل الجزء العلوي في السقوط والنهوض.',
         targets: 'القوة الانفجارية للصدر والذراعين',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 8 تكرارات'
@@ -369,6 +385,7 @@ export const sessions: Session[] = [
         title: 'دوران المحور (Landmine Rotations)',
         durationMinutes: 5,
         description: 'دوران الجذع باستخدام بار مثبت من جهة واحدة.',
+        benefits: 'يقوي عضلات الكور المسؤولة عن تغيير الاتجاه المفاجئ بقوة.',
         targets: 'قوة الالتفاف، الكور',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 10 لكل جهة'
@@ -378,6 +395,7 @@ export const sessions: Session[] = [
         title: 'تعليق رفع الركب (Hanging Knee Raises)',
         durationMinutes: 4,
         description: 'التعلق بعقلة ورفع الركبتين للصدر.',
+        benefits: 'يبني عضلات بطن فولاذية تحمي العمود الفقري وتزيد قوة التسديد.',
         targets: 'جذع سفلي، عضلات البطن',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 15 تكراراً'
@@ -393,6 +411,7 @@ export const sessions: Session[] = [
         title: 'المشي العكسي (Reverse Walking)',
         durationMinutes: 3,
         description: 'المشي للخلف لإحماء الأوتار.',
+        benefits: 'يضخ الدم في أوتار الركبة ويعالج آلام الرضفة (Patellar Tendon).',
         targets: 'إحماء أوتار الركبة',
         restDurationSeconds: 60,
         setsAndReps: '3 دقائق'
@@ -402,6 +421,7 @@ export const sessions: Session[] = [
         title: 'رفع القصبة (Tibialis Raises)',
         durationMinutes: 5,
         description: 'استند للحائط وارفع أمشاط قدميك.',
+        benefits: 'يبني درعاً حول الكاحل ويمنع آلام قصبة الساق (Shin Splints).',
         targets: 'درع الكاحل، العضلة الأمامية للساق',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 25 تكراراً'
@@ -411,6 +431,7 @@ export const sessions: Session[] = [
         title: 'رفع الأمشاط (Calf Raises)',
         durationMinutes: 4,
         description: 'رفع الكعبين للأعلى والأسفل لتقوية السمانة.',
+        benefits: 'يقوي وتر العرقوب (أخيل) ويزيد من قوة القفز والانطلاق.',
         targets: 'السمانة، وتر العرقوب',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 20 تكراراً'
@@ -420,6 +441,7 @@ export const sessions: Session[] = [
         title: 'القفز العريض (Broad Jumps)',
         durationMinutes: 6,
         description: 'القفز للأمام لأقصى مسافة ممكنة.',
+        benefits: 'يطور قوة الدفع الأفقية اللازمة للانطلاقات الصاروخية (Sprint).',
         targets: 'قوة دفع أفقية',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 5 قفزات'
@@ -429,6 +451,7 @@ export const sessions: Session[] = [
         title: 'قفزات المتزلج (Skater Jumps)',
         durationMinutes: 4,
         description: 'قفز جانبي من قدم لأخرى بوزن خفيف.',
+        benefits: 'يعلمك كيفية امتصاص القوة الجانبية وتغيير الاتجاه بلمح البصر.',
         targets: 'تغيير الاتجاه، قوة جانبية',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 10 تكرارات'
@@ -438,6 +461,7 @@ export const sessions: Session[] = [
         title: 'خطف البار (Hang Power Clean)',
         durationMinutes: 7,
         description: 'رفع البار الأسمنتي بقوة انفجارية من مستوى الركبة للكتف.',
+        benefits: 'يعلم جسمك كيفية توليد طاقة قصوى من القدمين وحتى الأكتاف في جزء من الثانية.',
         targets: 'طاقة كلية، قوة انفجارية',
         restDurationSeconds: 120,
         setsAndReps: '4 جولات × 5 تكرارات'
@@ -447,6 +471,7 @@ export const sessions: Session[] = [
         title: 'الرفعة الميتة الرومانية (RDL)',
         durationMinutes: 12,
         description: 'أثقل بار أسمنتي، نزول بطيء في 5 ثوانٍ مع ثني الركبة قليلاً.',
+        benefits: 'يؤمن الرباط الصليبي ويبني خلفيات حديدية تمنع التمزقات أثناء الركض.',
         targets: 'تأمين الصليبي، العضلات الخلفية',
         restDurationSeconds: 120,
         setsAndReps: '5 جولات × 8 تكرارات'
@@ -456,6 +481,7 @@ export const sessions: Session[] = [
         title: 'توازن البندول (Single Leg RDL)',
         durationMinutes: 6,
         description: 'RDL على قدم واحدة بالدمبلز.',
+        benefits: 'يمنحك توازن ميسي في الالتحامات ويقوي أربطة الكاحل والركبة.',
         targets: 'توازن ميسي، السلسلة الخلفية',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 8 تكرارات (لكل قدم)'
@@ -465,6 +491,7 @@ export const sessions: Session[] = [
         title: 'السكوات الجانبي (Cossack Squat)',
         durationMinutes: 5,
         description: 'نزول جانبي عميق بوزن.',
+        benefits: 'يفتح الحوض ويمنحك مرونة خرافية للوصول للكرات الصعبة.',
         targets: 'مرونة الحوض، العضلات الضامة',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 8 تكرارات'
@@ -474,6 +501,7 @@ export const sessions: Session[] = [
         title: 'الطعنات العكسية (Reverse Lunges)',
         durationMinutes: 6,
         description: 'طعنات للخلف بدلاً من الأمام.',
+        benefits: 'يخفف الضغط عن الركبة ويركز العمل على العضلة الخلفية والمؤخرة.',
         targets: 'قوة الفخذين والخلفيات',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 10 لكل قدم'
@@ -483,6 +511,7 @@ export const sessions: Session[] = [
         title: 'العقلة (Pull-ups)',
         durationMinutes: 7,
         description: 'سحب الجسم للأعلى على العقلة.',
+        benefits: 'يبني قوة سحب أساسية لظهر صلب ومتناسق.',
         targets: 'صلابة الظهر',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × أقصى تكرار'
@@ -492,6 +521,7 @@ export const sessions: Session[] = [
         title: 'زحلقة الخلفية (Hamstring Sliders)',
         durationMinutes: 7,
         description: 'سحب الكعبين على الأرضية أثناء الاستلقاء ورفع الحوض.',
+        benefits: 'يعزل العضلة الخلفية ويقويها في وضعية الانقباض لحمايتها من الشد.',
         targets: 'ترميم الخلفيات',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × 8 تكرارات'
@@ -501,6 +531,7 @@ export const sessions: Session[] = [
         title: 'بلانك كوبنهاجن (Copenhagen Plank)',
         durationMinutes: 8,
         description: 'بلانك جانبي مع وضع القدم العليا على مقعد.',
+        benefits: 'الممحاة السحرية لإصابات العضلة الضامة، يقويها بشكل خرافي.',
         targets: 'ممحاة إصابات الضامة',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × أقصى وقت'
@@ -510,6 +541,7 @@ export const sessions: Session[] = [
         title: 'سحب المفترس (Predator Pulls)',
         durationMinutes: 5,
         description: 'سحب منخفض باستخدام العضلة الخلفية.',
+        benefits: 'يعلمك كيفية استخدام قوة الورك في السحب والدفع.',
         targets: 'قوة الورك، الخلفيات',
         restDurationSeconds: 90,
         setsAndReps: '3 جولات × 12 تكراراً'
@@ -519,6 +551,7 @@ export const sessions: Session[] = [
         title: 'تمرين العجلة (Russian Twists)',
         durationMinutes: 4,
         description: 'دوران الجذع يميناً ويساراً مع رفع القدمين.',
+        benefits: 'ينحت عضلات البطن الجانبية المسؤولة عن التوازن أثناء التسديد.',
         targets: 'ثبات المركز، عضلات البطن الجانبية',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات × 15 تكراراً'
@@ -534,6 +567,7 @@ export const sessions: Session[] = [
         title: 'سبرنت انفجاري 20 متر',
         durationMinutes: 10,
         description: 'انطلاق بأقصى سرعة لمسافة 20 متر ثم العودة مشياً.',
+        benefits: 'يبرمج الألياف العضلية السريعة على الانقباض بأقصى سرعة ممكنة.',
         targets: 'السرعة القصوى، الألياف العضلية السريعة',
         restDurationSeconds: 60,
         setsAndReps: '10 تكرارات'
@@ -543,6 +577,7 @@ export const sessions: Session[] = [
         title: 'صعود الدرج السريع',
         durationMinutes: 10,
         description: 'صعود الدرج بأقصى سرعة خطوتين بخطوتين، والنزول ببطء.',
+        benefits: 'يبني تحملاً لاهوائياً جباراً وقوة انفجارية في الفخذين.',
         targets: 'قوة الفخذين، التحمل اللاهوائي',
         restDurationSeconds: 60,
         setsAndReps: '5 جولات'
@@ -558,6 +593,7 @@ export const sessions: Session[] = [
         title: 'سبرنت 30 متر',
         durationMinutes: 15,
         description: 'انطلاق بأقصى سرعة لمسافة 30 متر مع التركيز على حركة الذراعين.',
+        benefits: 'يرفع من سرعتك القصوى (Top Speed) لتسبق أي مدافع.',
         targets: 'السرعة القصوى',
         restDurationSeconds: 90,
         setsAndReps: '10 تكرارات'
@@ -573,6 +609,7 @@ export const sessions: Session[] = [
         title: 'سبرنتات قصيرة 10 متر',
         durationMinutes: 5,
         description: 'انطلاقات قصيرة جداً وسريعة.',
+        benefits: 'يحسن رد الفعل اللحظي والانطلاق في أول 5 أمتار.',
         targets: 'رد الفعل السريع',
         restDurationSeconds: 30,
         setsAndReps: '10 تكرارات'
@@ -582,6 +619,7 @@ export const sessions: Session[] = [
         title: 'درج خفيف',
         durationMinutes: 5,
         description: 'صعود الدرج بخطوة واحدة بإيقاع متوسط.',
+        benefits: 'ينشط الدورة الدموية ويسرع من عملية الاستشفاء النشط.',
         targets: 'تنشيط الدورة الدموية',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات'
@@ -591,6 +629,7 @@ export const sessions: Session[] = [
         title: 'أوزان خفيفة (جسم كامل)',
         durationMinutes: 10,
         description: 'تمارين بوزن الجسم أو دمبلز خفيفة (سكوات، ضغط، سحب) بدون الوصول للإرهاق.',
+        benefits: 'يحافظ على الكتلة العضلية ويضخ الدم دون إرهاق الجهاز العصبي.',
         targets: 'الحفاظ على الكتلة العضلية، ضخ الدم',
         restDurationSeconds: 60,
         setsAndReps: 'جولتين لكل تمرين'
@@ -606,6 +645,7 @@ export const sessions: Session[] = [
         title: 'استلام وتسليم (باصات خفيفة)',
         durationMinutes: 15,
         description: 'تمرير الكرة مع الحائط أو زميل بلمسة ولمستين بدون مجهود بدني عالي.',
+        benefits: 'يصقل اللمسة الأولى ويجعل التمرير دقيقاً كالساعة السويسرية.',
         targets: 'دقة التمرير، اللمسة الأولى',
         restDurationSeconds: 0,
         setsAndReps: '15 دقيقة متواصلة'
@@ -615,6 +655,7 @@ export const sessions: Session[] = [
         title: '1 ضد 1 (خفيف)',
         durationMinutes: 15,
         description: 'مراوغات خفيفة وتجربة مهارات جديدة بدون التحامات قوية.',
+        benefits: 'يبني الثقة بالنفس ويطور الخيال المهاري في المواجهات الفردية.',
         targets: 'الخيال المهاري، الثقة',
         restDurationSeconds: 60,
         setsAndReps: '15 دقيقة'
@@ -738,6 +779,7 @@ export const sessions: Session[] = [
         title: 'انحناء جيفرسون (Jefferson Curl)',
         durationMinutes: 3,
         description: 'انزل ببطء شديد (فقرة فقرة) ثم اصعد ببطء. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يعيد هيكلة فاشيا الظهر بالكامل ويزيد مرونة العمود الفقري.',
         targets: 'السلسلة الخلفية',
         restDurationSeconds: 60,
         setsAndReps: 'جولتين بتركيز فائق'
@@ -747,6 +789,7 @@ export const sessions: Session[] = [
         title: 'الضغط الهندوسي (Hindu Pushups)',
         durationMinutes: 3,
         description: 'حركة انسيابية من الكلب الناظر لأسفل إلى الكوبرا. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يفكك تيبس الكتفين والعمود الفقري ويقوي السلسلة الحلزونية.',
         targets: 'الكتف، العمود الفقري',
         restDurationSeconds: 60,
         setsAndReps: 'جولتين بتركيز فائق'
@@ -756,6 +799,7 @@ export const sessions: Session[] = [
         title: 'النورديك العكسي (Reverse Nordic)',
         durationMinutes: 3,
         description: 'ارجع بجذعك للخلف ببطء شديد من وضعية الجلوس على الركبتين. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
+        benefits: 'يطيل ويقوي فاشيا العضلة الرباعية ويحمي الركبة.',
         targets: 'العضلة الرباعية',
         restDurationSeconds: 60,
         setsAndReps: 'جولتين بتركيز فائق'
