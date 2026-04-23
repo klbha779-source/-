@@ -13,6 +13,8 @@ export type Exercise = {
 export type Session = {
   id: string;
   title: string;
+  description?: string;
+  timeline?: { time: string; action: string; goal: string }[];
   exercises: Exercise[];
 };
 
@@ -33,11 +35,11 @@ export const sessions: Session[] = [
       },
       {
         id: 'gw_2',
-        title: 'تدفق الـ 90/90 مع القرفصاء الجانبي (90/90 to Cossack)',
+        title: 'تدفق الـ 90/90 (90/90 Flow)',
         durationMinutes: 2,
-        description: 'اجلس على الأرض واجعل ركبتيك بزاوية 90 درجة. قم بتبديل الاتجاه دون استخدام يديك. ثم قم بالوقوف مباشرة وقم بأداء "Cossack Squat" (النزول على رجل واحدة مع فرد الأخرى).',
-        benefits: 'تحمي "العضلة الضامة" من التمزق وتمنحك مرونة خرافية في الدوران والمراوغة.',
-        targets: 'الحوض، العضلة الضامة',
+        description: 'اجلس على الأرض واجعل ركبتيك بزاوية 90 درجة. قم بتبديل الاتجاه دون استخدام يديك ببطء.',
+        benefits: 'تحرر مفصل الحوض وتزيد من مدى الحركة اللازم للمراوغة والالتفاف الجسدي.',
+        targets: 'مفصل الحوض',
         restDurationSeconds: 0,
         setsAndReps: 'دقيقتين متواصلة'
       },
@@ -250,28 +252,7 @@ export const sessions: Session[] = [
     id: 'physical_day1',
     title: 'البدنية (الأمامي): الانفجار والدرع الأمامي (بروتوكول التيتانيوم)',
     exercises: [
-      {
-        id: 't1_1',
-        title: 'المشي العكسي (Reverse Walking)',
-        durationMinutes: 3,
-        description: 'المشي للخلف لإحماء الأوتار.',
-        benefits: 'يضخ الدم في أوتار الركبة ويعالج آلام الرضفة (Patellar Tendon).',
-        targets: 'إحماء أوتار الركبة',
-        restDurationSeconds: 60,
-        setsAndReps: '3 دقائق'
-      },
-      {
-        id: 't1_2',
-        title: 'رفع القصبة (Tibialis Raises)',
-        durationMinutes: 5,
-        description: 'استند للحائط وارفع أمشاط قدميك.',
-        benefits: 'يبني درعاً حول الكاحل ويمنع آلام قصبة الساق (Shin Splints).',
-        targets: 'درع الكاحل، العضلة الأمامية للساق',
-        restDurationSeconds: 60,
-        setsAndReps: '3 جولات × 25 تكراراً'
-      },
-      {
-        id: 't1_3',
+      { id: 't1_3',
         title: 'رفع الأمشاط (Calf Raises)',
         durationMinutes: 4,
         description: 'رفع الكعبين للأعلى والأسفل لتقوية السمانة.',
@@ -406,28 +387,7 @@ export const sessions: Session[] = [
     id: 'physical_day2',
     title: 'البدنية (الخلفي): الفرملة والدرع الخلفي (بروتوكول التيتانيوم)',
     exercises: [
-      {
-        id: 't2_1',
-        title: 'المشي العكسي (Reverse Walking)',
-        durationMinutes: 3,
-        description: 'المشي للخلف لإحماء الأوتار.',
-        benefits: 'يضخ الدم في أوتار الركبة ويعالج آلام الرضفة (Patellar Tendon).',
-        targets: 'إحماء أوتار الركبة',
-        restDurationSeconds: 60,
-        setsAndReps: '3 دقائق'
-      },
-      {
-        id: 't2_2',
-        title: 'رفع القصبة (Tibialis Raises)',
-        durationMinutes: 5,
-        description: 'استند للحائط وارفع أمشاط قدميك.',
-        benefits: 'يبني درعاً حول الكاحل ويمنع آلام قصبة الساق (Shin Splints).',
-        targets: 'درع الكاحل، العضلة الأمامية للساق',
-        restDurationSeconds: 60,
-        setsAndReps: '3 جولات × 25 تكراراً'
-      },
-      {
-        id: 't2_3',
+      { id: 't2_3',
         title: 'رفع الأمشاط (Calf Raises)',
         durationMinutes: 4,
         description: 'رفع الكعبين للأعلى والأسفل لتقوية السمانة.',
@@ -487,16 +447,6 @@ export const sessions: Session[] = [
         setsAndReps: '3 جولات × 8 تكرارات (لكل قدم)'
       },
       {
-        id: 't2_9',
-        title: 'السكوات الجانبي (Cossack Squat)',
-        durationMinutes: 5,
-        description: 'نزول جانبي عميق بوزن.',
-        benefits: 'يفتح الحوض ويمنحك مرونة خرافية للوصول للكرات الصعبة.',
-        targets: 'مرونة الحوض، العضلات الضامة',
-        restDurationSeconds: 90,
-        setsAndReps: '3 جولات × 8 تكرارات'
-      },
-      {
         id: 't2_10',
         title: 'الطعنات العكسية (Reverse Lunges)',
         durationMinutes: 6,
@@ -515,16 +465,6 @@ export const sessions: Session[] = [
         targets: 'صلابة الظهر',
         restDurationSeconds: 90,
         setsAndReps: '4 جولات × أقصى تكرار'
-      },
-      {
-        id: 't2_12',
-        title: 'زحلقة الخلفية (Hamstring Sliders)',
-        durationMinutes: 7,
-        description: 'سحب الكعبين على الأرضية أثناء الاستلقاء ورفع الحوض.',
-        benefits: 'يعزل العضلة الخلفية ويقويها في وضعية الانقباض لحمايتها من الشد.',
-        targets: 'ترميم الخلفيات',
-        restDurationSeconds: 90,
-        setsAndReps: '4 جولات × 8 تكرارات'
       },
       {
         id: 't2_13',
@@ -662,63 +602,70 @@ export const sessions: Session[] = [
       }
     ]
   },
-  {
-    id: 'daily_lubrication',
-    title: 'بروتوكول التزييت اليومي (صيانة المفاصل)',
+    {
+    id: 'titanium_protocol',
+    title: 'بروتوكول التيتانيوم (ترميم الركبة والتزييت)',
+    description: 'روتين متكامل لترميم ركبتك. نفذه قبل تمرينك الأساسي في أيام التدريب، أو كجلسة منفصلة في أيام الراحة.',
+    timeline: [
+      { time: 'الدقيقة 0', action: 'جرعة الوقود', goal: 'كُل ملعقة كبيرة من (الجيلي الصافي + عصرة ليمون + رشة فلفل أسود). لإرسال الكولاجين إلى مجرى الدم وتجهيزه.' },
+      { time: 'الدقيقة 45', action: 'مفتاح الحرارة', goal: 'ضع كمادة ماء "حار" على ركبتك (وتر الرضفة) لمدة 15 دقيقة وأنت تراجع دروسك. لتوسيع الأوعية الدموية داخل الوتر ليكون مستعداً لامتصاص الكولاجين.' },
+      { time: 'الدقيقة 60', action: 'المغناطيس (الـ 10 دقائق العظمى)', goal: 'أزل الكمادة الحارة وابدأ التمارين فوراً. لعصر الوتر وسحب الكولاجين من الدم إلى داخل التمزقات المجهرية.' },
+      { time: 'الدقيقة 70', action: 'قفل الثلج', goal: 'ضع كمادة ثلج (أو ماء بارد جداً) على نفس مكان الركبة لمدة 10 دقائق. لحبس الكولاجين داخل الوتر وإطفاء أي التهاب.' }
+    ],
     exercises: [
       {
-        id: 'dl_1',
-        title: 'رفع القصبة (Tibialis Raises)',
+        id: 'tp_1',
+        title: 'المشي للخلف (Reverse Walking)',
         durationMinutes: 2,
-        description: 'قف مستنداً بظهرك على الحائط، وابعد قدميك قليلاً. ارفع أصابع قدميك للأعلى ببطء ثم أنزلها.',
-        benefits: 'يقوي العضلة الأمامية للساق ويحمي الركبة من الآلام.',
-        targets: 'قصبة الساق (Tibialis Anterior)',
-        restDurationSeconds: 30,
-        setsAndReps: '25 تكراراً'
-      },
-      {
-        id: 'dl_2',
-        title: 'إطالة الأريكة (Couch Stretch)',
-        durationMinutes: 2,
-        description: 'ضع ركبة واحدة على الأرض وقدمك مسندة على حائط أو أريكة خلفك. ادفع حوضك للأمام ببطء.',
-        benefits: 'يفتح الحوض ويطيل العضلة الرباعية بقوة.',
-        targets: 'الحوض، العضلة الرباعية',
-        restDurationSeconds: 0,
-        setsAndReps: 'دقيقة واحدة لكل قدم'
-      },
-      {
-        id: 'dl_3',
-        title: 'المشي العكسي (Reverse Walking)',
-        durationMinutes: 5,
-        description: 'امشِ للخلف بخطوات ثابتة، مع التركيز على دفع الأرض بمشط القدم.',
-        benefits: 'يزيت الركبة ويزيد من تدفق الدم للأوتار.',
+        description: 'امشِ للخلف ببطء في مساحة غرفتك.',
+        benefits: 'لضخ السائل الزليلي وتزييت المفصل.',
         targets: 'الركبة، الأوتار',
         restDurationSeconds: 0,
-        setsAndReps: '3 إلى 5 دقائق'
+        setsAndReps: 'الدقيقة 1 إلى 2'
       },
       {
-        id: 'dl_4',
-        title: 'صعود باتريك العكسي (Patrick Step)',
-        durationMinutes: 3,
-        description: 'قف على قدم واحدة على درجة صغيرة، وانزل القدم الأخرى ببطء لتلمس الأرض بالكعب ثم اصعد.',
-        benefits: 'يقوي أوتار الركبة ويعالج آلامها.',
-        targets: 'الركبة، العضلة الرباعية (VMO)',
-        restDurationSeconds: 30,
-        setsAndReps: '15 تكراراً لكل قدم'
-      },
-      {
-        id: 'dl_5',
+        id: 'tp_2',
         title: 'الجلوس على الحائط (Wall Sit)',
-        durationMinutes: 1,
-        description: 'استند بظهرك على الحائط وانزل بوضعية الجلوس بزاوية 90 درجة. ركز على تثبيت قدميك بقوة كـ "مخلب النمر".',
-        benefits: 'يبني تحمل أوتار الركبة ويفعل العضلات المثبتة.',
+        durationMinutes: 3,
+        description: 'انزل بزاوية 90 درجة، واغرس كعبيك بالأرض وكأنك تسحبهما للخلف.',
+        benefits: 'هذا هو المغناطيس الأقوى لسحب الدم للركبة.',
         targets: 'العضلة الرباعية، الأوتار',
         restDurationSeconds: 0,
-        setsAndReps: 'دقيقة واحدة'
+        setsAndReps: 'الدقيقة 3 إلى 5'
+      },
+      {
+        id: 'tp_3',
+        title: 'رفع قصبة الساق (Tibialis Raises)',
+        durationMinutes: 2,
+        description: 'استند للحائط وارفع أمشاط قدميك للأعلى.',
+        benefits: 'لبناء درع الصدمات الأمامي.',
+        targets: 'قصبة الساق (Tibialis Anterior)',
+        restDurationSeconds: 0,
+        setsAndReps: 'الدقيقة 6 إلى 7 (30-40 تكراراً)'
+      },
+      {
+        id: 'tp_4',
+        title: 'صعود باتريك العكسي (Patrick Step-Downs)',
+        durationMinutes: 2,
+        description: 'انزل ببطء على قدم واحدة المس الأرض بكعب القدم الأخرى واصعد.',
+        benefits: 'لتشفير مسار صابونة الركبة.',
+        targets: 'الركبة، العضلة الرباعية (VMO)',
+        restDurationSeconds: 0,
+        setsAndReps: 'الدقيقة 8 إلى 9 (15 تكراراً لكل قدم)'
+      },
+      {
+        id: 'tp_5',
+        title: 'الثبات في النورديك العكسي (Reverse Nordic Hold)',
+        durationMinutes: 1,
+        description: 'اجلس على ركبتيك، أرجع ظهرك المستقيم للخلف حتى تشعر بأقصى شد في فخذك وركبتك، وابقَ ثابتاً دون حركة.',
+        benefits: 'لشد ولحام ألياف الكولاجين الجديدة.',
+        targets: 'العضلة الرباعية، السلسلة الأمامية',
+        restDurationSeconds: 0,
+        setsAndReps: 'الدقيقة 10 (ثبات 60 ثانية)'
       }
     ]
   },
-  {
+{
     id: 'fascia_monday',
     title: 'جلسة الفاشيا: السلسلة الخلفية والحلزونية',
     exercises: [
@@ -755,16 +702,6 @@ export const sessions: Session[] = [
         description: 'اجلس على ركبتيك، وارجع بجذعك للخلف ببطء شديد مع الحفاظ على استقامة جسمك من الركبة للرأس. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
         benefits: 'يطيل ويقوي فاشيا العضلة الرباعية ويحمي الركبة.',
         targets: 'العضلة الرباعية، السلسلة الأمامية',
-        restDurationSeconds: 60,
-        setsAndReps: '3 جولات، 6-8 تكرارات'
-      },
-      {
-        id: 'ft_2',
-        title: 'سكوات القوزاق (Cossack Squat)',
-        durationMinutes: 5,
-        description: 'قف بفتحة قدمين واسعة، انزل ببطء على رجل واحدة مع إبقاء الأخرى مفرودة وموجهة للأعلى. (5 ثوانٍ نزول، 5 ثوانٍ صعود).',
-        benefits: 'يعيد هيكلة فاشيا العضلة الضامة ويفتح الحوض الجانبي.',
-        targets: 'العضلة الضامة، الحوض',
         restDurationSeconds: 60,
         setsAndReps: '3 جولات، 6-8 تكرارات'
       }
@@ -805,21 +742,104 @@ export const sessions: Session[] = [
         setsAndReps: 'جولتين بتركيز فائق'
       }
     ]
+  },
+  {
+    id: 'ligament_protocol',
+    title: 'تمارين الأربطة الأكثر أهمية في تاريخ كرة القدم',
+    description: 'هذا هو "المانيفستو الميكانيكي" النهائي لبناء "الدرع السفلي الشامل". يُنفذ حافياً بالكامل للارتقاء بقوة الأربطة ومطاطيتها لمستوى غير مسبوق.',
+    timeline: [
+      { time: 'T-60 دقيقة', action: 'التهيئة الكيميائية', goal: 'شرب جرعة (الكولاجين + الليمون + فلفل أسود) لإرسال الكولاجين لمجرى الدم.' },
+      { time: 'T-0 دقيقة', action: 'تجهيز البيئة', goal: 'نفذ الجدول حافياً بالكامل في غرفتك باستخدام الجدار والأرضية وإطار الباب.' }
+    ],
+    exercises: [
+      {
+        id: 'lp_1',
+        title: 'دفع الجدار (Wall Calf Push) - آيزومتري',
+        durationMinutes: 1,
+        description: 'قف مائلاً نحو الجدار، ضع يديك عليه. ادفع الجدار للأمام بكل وزنك وقوتك كأنك تريد إسقاطه لمدة 10 ثوانٍ.',
+        benefits: 'يزيد سمك وتر أخيل ويشحن الجهاز العصبي بقوة انفجارية قصوى.',
+        targets: 'وتر أخيل (السمك)',
+        setsAndReps: '5 جولات × 10 ثوانٍ (بأقصى قوة)',
+        tips: 'ادفع بـ 100% من نيتك العصبية، كأنك تريد تحريك الجدار فعلياً.'
+      },
+      {
+        id: 'lp_2',
+        title: 'النزول السلبي (Heel Drop) - لامركزي',
+        durationMinutes: 2,
+        description: 'قف بأمشاطك على حافة كتاب أو عتبة. ارتفع بالقدمين، ثم ارفع قدمك السليمة وانزل بوزنك كله على قدم واحدة ببطء شديد.',
+        benefits: 'يزيد من مطاطية الوتر ويحوله إلى "زنبرك" بشري يمتص ويطلق الطاقة.',
+        targets: 'وتر أخيل (المطاطية)',
+        setsAndReps: '3 جولات × 10 تكرارات',
+        tips: 'بطء مميت: عد 5 ثوانٍ كاملة أثناء النزول حتى ينزل كعبك أسفل الحافة.'
+      },
+      {
+        id: 'lp_3',
+        title: 'غرس وسحب الكعب (Heel Dig) - آيزومتري',
+        durationMinutes: 1,
+        description: 'استلقِ على ظهرك، اثنِ ركبتيك قليلاً، اغرس كعبيك في الأرض واسحبهما باتجاه حوضك بأقصى قوة دون تحريكهما.',
+        benefits: 'يبني سمكاً في أوتار الخلفية ويحميها من التمزقات الناتجة عن السرعة.',
+        targets: 'أوتار الخلفية (السمك)',
+        setsAndReps: '5 جولات × 10 ثوانٍ',
+        tips: '100% أقصى قوة، تخيل أنك تريد تمزيق السجادة تحت كعبيك.'
+      },
+      {
+        id: 'lp_4',
+        title: 'الانزلاق الأرضي (Floor Sliders) - لامركزي',
+        durationMinutes: 1,
+        description: 'في وضعية الجسر، ارتدِ جوارب على سيراميك، ودع قدميك تنزلقان للأمام ببطء شديد وأنت تقاوم هذا الانزلاق بعضلاتك.',
+        benefits: 'يقوي الأوتار في وضعية التمدد، مما يمنع الإصابات أثناء الفرملة المفاجئة.',
+        targets: 'أوتار الخلفية (المطاطية)',
+        setsAndReps: '3 جولات × 5 تكرارات',
+        tips: 'قاوم الانزلاق للأمام ببطء شديد حتى تستقيم رجلاك تماماً.'
+      },
+      {
+        id: 'lp_5',
+        title: 'كماشة إطار الباب (Adductor Press) - آيزومتري',
+        durationMinutes: 1,
+        description: 'قف داخل إطار الباب، اسند باطن قدمك المصابة ضد الخشب، وادفع للداخل بأقصى قوة كأنك تريد كسر الإطار.',
+        benefits: 'يبني درعاً للعضلة الضامة، وهي المنطقة الأكثر عرضة للإصابة في كرة القدم.',
+        targets: 'العضلة الضامة (السمك)',
+        setsAndReps: '5 جولات × 10 ثوانٍ',
+        tips: 'ادفع بـ 100% من طاقتك لتقوية أوتار الحوض الداخلية.'
+      },
+      {
+        id: 'lp_6',
+        title: 'سكوات القوزاق (Cossack Squat) - حركي',
+        durationMinutes: 2,
+        description: 'افتح قدميك واسعاً جداً، انزل بوزنك نحو ركبة واحدة مع إبقاء الساق الأخرى مستقيمة وموجهة للأعلى.',
+        benefits: 'تزييت ديناميكي لمفصل الحوض والضامة للحصول على مرونة "برازيلية".',
+        targets: 'الضامة والحوض (تزييت)',
+        setsAndReps: '3 جولات × 5 تكرارات',
+        tips: 'نزول عميق وهادئ، كعب القدم المفرودة يلامس الأرض فقط.'
+      },
+      {
+        id: 'lp_7',
+        title: 'التوازن الأعمى (Blind Balance) - عصبي',
+        durationMinutes: 1,
+        description: 'قف على قدم واحدة حافياً، ارفع الركبة الأخرى، وبمجرد التوازن أغلق عينيك بقوة وقاوم الاهتزاز.',
+        benefits: 'يعيد برمجة الرباط الصليبي عصبياً للتعامل مع الحركات اللاإرادية في الملعب.',
+        targets: 'الرباط الصليبي (برمجة عصيبة)',
+        setsAndReps: 'جولة واحدة × 60 ثانية (لكل قدم)',
+        tips: 'ستشعر باهتزاز جنوني؛ هذا هو دماغك وهو يبني "الدرع العصبي". قاوم السقوط.'
+      }
+    ]
   }
 ];
 
 export const weeklySchedule: Record<number, { title: string, sessionIds: string[] }> = {
-  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_day1', 'sprint_stairs'] },
-  1: { title: 'الاثنين: مهارة + فاشيا (خلفية)', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'fascia_monday'] },
-  2: { title: 'الثلاثاء: راحة تامة (تزييت يومي فقط)', sessionIds: ['daily_lubrication'] },
-  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_day2', 'sprint_only'] },
-  4: { title: 'الخميس: مهارة + فاشيا (أمامية)', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'fascia_thursday'] },
-  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_mastery', 'physical_light'] },
-  6: { title: 'السبت: مهارة خفيفة + فاشيا شاملة', sessionIds: ['daily_lubrication', 'golden_warmup', 'skills_light', 'fascia_saturday'] }
+  0: { title: 'الأحد: مهارة + بدنية + سبرنت + درج', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_mastery', 'physical_day1', 'sprint_stairs'] },
+  1: { title: 'الاثنين: مهارة + فاشيا (خلفية)', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_mastery', 'fascia_monday'] },
+  2: { title: 'الثلاثاء: راحة تامة (تزييت يومي فقط)', sessionIds: ['ligament_protocol', 'titanium_protocol'] },
+  3: { title: 'الأربعاء: مهارة + بدنية + سبرنت', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_mastery', 'physical_day2', 'sprint_only'] },
+  4: { title: 'الخميس: مهارة + فاشيا (أمامية)', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_mastery', 'fascia_thursday'] },
+  5: { title: 'الجمعة: مهارة + بدنية خفيفة', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_mastery', 'physical_light'] },
+  6: { title: 'السبت: مهارة خفيفة + فاشيا شاملة', sessionIds: ['ligament_protocol', 'titanium_protocol', 'golden_warmup', 'skills_light', 'fascia_saturday'] }
 };
 
 export const getCaloriesForSession = (sessionId: string): number => {
   switch (sessionId) {
+    case 'titanium_protocol': return 100;
+    case 'ligament_protocol': return 120;
     case 'golden_warmup': return 50;
     case 'skills_mastery': return 450;
     case 'physical_day1': return 350;
@@ -829,8 +849,7 @@ export const getCaloriesForSession = (sessionId: string): number => {
     case 'physical_light': return 200;
     case 'skills_light': return 200;
     case 'night_recovery': return 50;
-    case 'daily_lubrication': return 80;
-    case 'fascia_monday': return 100;
+        case 'fascia_monday': return 100;
     case 'fascia_thursday': return 100;
     case 'fascia_saturday': return 120;
     default: return 100;
